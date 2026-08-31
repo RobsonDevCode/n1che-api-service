@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="N1che.Api/N1che.Api.csproj" />
+  <Project Path="N1che.Contracts/N1che.Contracts.csproj" />
+  <Project Path="N1che.Domain/N1che.Domain.csproj" />
+  <Project Path="N1che.Persistence.Postgres/N1che.Persistence.Postgres.csproj" />
+  <Project Path="N1che.ServiceTests/N1che.ServiceTests.csproj" />
+</Solution>
