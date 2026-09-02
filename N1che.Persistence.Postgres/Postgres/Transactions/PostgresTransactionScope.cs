@@ -3,20 +3,28 @@ using Npgsql;
 
 namespace N1che.Persistence.Postgres.Postgres.Transactions;
 
-public sealed class PostgresTransactionScope(NpgsqlDataSource dataSource, PostgresTransactionContext context)
-    : ITransactionScope
+public sealed class PostgresTransactionScope : ITransactionScope
 {
+    private readonly NpgsqlDataSource _dataSource;
+    private readonly PostgresTransactionContext _context;
+
+    public PostgresTransactionScope(NpgsqlDataSource dataSource, PostgresTransactionContext context)
+    {
+        _dataSource = dataSource;
+        _context = context;
+    }
+
     public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken)
     {
-        if (context.Transaction is not null)
+        if (_context.Transaction is not null)
         {
             return await operation(cancellationToken);
         }
 
-        await using var connection = await dataSource.OpenConnectionAsync(cancellationToken);
+        await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
         await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
-        context.Connection = connection;
-        context.Transaction = transaction;
+        _context.Connection = connection;
+        _context.Transaction = transaction;
         try
         {
             var result = await operation(cancellationToken);
@@ -30,8 +38,8 @@ public sealed class PostgresTransactionScope(NpgsqlDataSource dataSource, Postgr
         }
         finally
         {
-            context.Connection = null;
-            context.Transaction = null;
+            _context.Connection = null;
+            _context.Transaction = null;
         }
     }
 }

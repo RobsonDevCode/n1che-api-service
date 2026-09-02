@@ -2,7 +2,7 @@
 CREATE TABLE niches (
     id          text PRIMARY KEY,
     label       text NOT NULL,
-    sub         text NOT NULL,
+    sub_label   text NOT NULL,
     description text NOT NULL
 );
 

@@ -1,5 +1,5 @@
 -- +goose Up
-INSERT INTO niches (id, label, sub, description) VALUES
+INSERT INTO niches (id, label, sub_label, description) VALUES
     ('goth',        'Goth',       'dark',         'Dark aesthetics, velvet, silver hardware'),
     ('oldmoney',    'Old Money',  'quiet luxury', 'Tailored cuts, cashmere, quiet luxury'),
     ('skater',      'Skater',     'streetwise',   'Baggy fits, graphic tees, low-tops'),

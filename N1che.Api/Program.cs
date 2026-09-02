@@ -13,8 +13,10 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 builder.Services.AddOpenApi();
+builder.Services.AddMemoryCache();
 builder.Services.AddPostgres(builder.Configuration);
 builder.Services.AddDomainDependencies();
+builder.Services.AddValidationDependencies();
 builder.Services.AddN1cheHealthChecks();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -26,7 +28,7 @@ app.UseExceptionHandler();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapScalarApiReference("/docs");
 }
 
 app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false });

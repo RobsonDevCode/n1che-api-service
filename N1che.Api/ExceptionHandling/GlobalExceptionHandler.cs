@@ -4,8 +4,15 @@ using N1che.Domain.Exceptions;
 
 namespace N1che.Api.ExceptionHandling;
 
-internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
+internal sealed class GlobalExceptionHandler : IExceptionHandler
 {
+    private readonly ILogger<GlobalExceptionHandler> _logger;
+
+    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
+    {
+        _logger = logger;
+    }
+
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         var (statusCode, title) = exception switch
@@ -19,11 +26,11 @@ internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log
 
         if (isUnexpected)
         {
-            logger.LogError(exception, "Unhandled exception");
+            _logger.LogError(exception, "Unhandled exception");
         }
         else
         {
-            logger.LogWarning(exception, "{Title}", title);
+            _logger.LogWarning(exception, "{Title}", title);
         }
 
         httpContext.Response.StatusCode = statusCode;
