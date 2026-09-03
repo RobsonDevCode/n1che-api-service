@@ -1,7 +1,11 @@
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using N1che.ServiceTests.Infrastructure.Logger;
 
 namespace N1che.ServiceTests.Infrastructure;
@@ -25,7 +29,32 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             .ConfigureServices(services =>
             {
                 services.AddSingleton(FakeLogger);
+                services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.Authority = null;
+                    options.MetadataAddress = null!;
+                    options.RequireHttpsMetadata = false;
+                    options.Configuration = new OpenIdConnectConfiguration();
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = TestAuth.Issuer,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = TestAuth.SigningKey,
+                        NameClaimType = "username"
+                    };
+                });
             });
+    }
+
+    public HttpClient CreateAuthenticatedClient(string? token = null)
+    {
+        var client = CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", token ?? TestAuth.GenerateToken());
+        return client;
     }
 
     public static TestWebApplicationFactory Instance

@@ -21,6 +21,10 @@ internal class ConfigureLightBddScopeAttribute : LightBddScopeAttribute
         Environment.SetEnvironmentVariable("Postgres__ConnectionString", connectionString);
         DatabaseMigrator.ApplyAsync(connectionString).Wait();
 
+        Environment.SetEnvironmentVariable("Cognito__Region", TestAuth.Region);
+        Environment.SetEnvironmentVariable("Cognito__UserPoolId", TestAuth.UserPoolId);
+        Environment.SetEnvironmentVariable("Cognito__ClientId", TestAuth.ClientId);
+
         TestWebApplicationFactory.Initialize(_ => { });
     }
 

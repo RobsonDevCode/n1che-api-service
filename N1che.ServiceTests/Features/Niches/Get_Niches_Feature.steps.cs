@@ -14,7 +14,7 @@ public partial class Get_Niches_Feature : FeatureFixture
     private HttpResponseMessage _response = null!;
 
     private static FakeLoggerProvider TestLogger => TestWebApplicationFactory.Instance.FakeLogger;
-    private static HttpClient Client => TestWebApplicationFactory.Instance.CreateClient();
+    private static HttpClient Client => TestWebApplicationFactory.Instance.CreateAuthenticatedClient();
 
     private const string EndpointLog = "Getting niches";
     private const string SuccessLog = "Niches retrieved";

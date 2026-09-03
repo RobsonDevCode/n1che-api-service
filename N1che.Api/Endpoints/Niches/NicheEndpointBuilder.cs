@@ -6,6 +6,7 @@ internal static class NicheEndpointBuilder
     {
         endpoints.MapGroup("niches")
             .AddGetNichesEndpoints()
+            .RequireAuthorization()
             .WithTags("niches");
 
         return endpoints;

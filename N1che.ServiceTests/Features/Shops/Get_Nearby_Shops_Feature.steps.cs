@@ -36,7 +36,7 @@ public partial class Get_Nearby_Shops_Feature : FeatureFixture
     private Dictionary<string, object> _scopeValues = null!;
 
     private static FakeLoggerProvider TestLogger => TestWebApplicationFactory.Instance.FakeLogger;
-    private static HttpClient Client => TestWebApplicationFactory.Instance.CreateClient();
+    private static HttpClient Client => TestWebApplicationFactory.Instance.CreateAuthenticatedClient();
 
     private readonly string EndpointLog;
     private const string SuccessLog = "Nearby shops retrieved";

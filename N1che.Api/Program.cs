@@ -16,6 +16,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddMemoryCache();
 builder.Services.AddPostgres(builder.Configuration);
 builder.Services.AddDomainDependencies();
+builder.Services.AddCognitoAuthentication(builder.Configuration);
 builder.Services.AddValidationDependencies();
 builder.Services.AddN1cheHealthChecks();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -24,6 +25,9 @@ builder.Services.AddProblemDetails();
 var app = builder.Build();
 
 app.UseExceptionHandler();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
