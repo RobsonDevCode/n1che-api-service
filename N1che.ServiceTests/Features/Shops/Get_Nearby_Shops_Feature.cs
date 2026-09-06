@@ -4,6 +4,7 @@ using LightBDD.XUnit2;
 using Microsoft.Extensions.Logging;
 using N1che.Contracts.Filters.Shops;
 using N1che.ServiceTests.CommonSteps;
+using N1che.ServiceTests.Infrastructure;
 
 namespace N1che.ServiceTests.Features.Shops;
 
@@ -12,7 +13,7 @@ public partial class Get_Nearby_Shops_Feature
     [Scenario]
     public async Task Get_Nearby_Shops_Returns_Shops_When_Shops_Exists_In_Radius_Filtered_By_Niche_Nearest_First()
     {
-        var filter = new NearbyShopsFilter { Lat = _originLatitude, Lng = _originLongitude, Niche = Goth };
+        var filter = new NearbyShopsFilter { Lat = _originLatitude, Lng = _originLongitude, Niche = NicheConstants.Goth };
 
         await Runner.RunScenarioAsync(
             given => Shops_Exist(),
@@ -26,7 +27,7 @@ public partial class Get_Nearby_Shops_Feature
     [Scenario]
     public async Task Get_Nearby_Shops_Returns_Shops_When_Shops_Exists_Excluding_Those_Outside_The_Radius()
     {
-        var filter = new NearbyShopsFilter { Lat = _originLatitude, Lng = _originLongitude, Niche = Vintage, Radius = SmallRadiusMeters };
+        var filter = new NearbyShopsFilter { Lat = _originLatitude, Lng = _originLongitude, Niche = NicheConstants.Vintage, Radius = SmallRadiusMeters };
 
         await Runner.RunScenarioAsync(
             given => Shops_Exist(),
@@ -38,7 +39,7 @@ public partial class Get_Nearby_Shops_Feature
     [Scenario]
     public async Task Get_Nearby_Shops_Returns_Shops_When_Shops_Exists_Belonging_To_Multiple_Niches()
     {
-        var filter = new NearbyShopsFilter { Lat = _originLatitude, Lng = _originLongitude, Niche = Streetwear };
+        var filter = new NearbyShopsFilter { Lat = _originLatitude, Lng = _originLongitude, Niche = NicheConstants.Streetwear };
 
         await Runner.RunScenarioAsync(
             given => Shops_Exist(),

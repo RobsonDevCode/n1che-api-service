@@ -18,12 +18,6 @@ public partial class Get_Nearby_Shops_Feature : FeatureFixture
     private const double SmallRadiusMeters = 500;
     private const double DefaultRadiusMeters = 5000; // mirrors the API default when no radius is supplied
 
-    private const string Goth = "goth";
-    private const string Skater = "skater";
-    private const string Vintage = "vintage";
-    private const string Streetwear = "streetwear";
-    private const string Y2k = "y2k";
-
     private readonly IFixture _fixture;
 
     // A fresh origin per scenario keeps each scenario's rows out of every other scenario's radius.
@@ -48,21 +42,21 @@ public partial class Get_Nearby_Shops_Feature : FeatureFixture
         _originLongitude = Random.Shared.Next(-170, 170) + Random.Shared.NextDouble();
 
         EndpointLog = string.Format(CultureInfo.InvariantCulture,
-            "Getting nearby shops at ({0}, {1}) for niche {2}", _originLatitude, _originLongitude, Goth);
+            "Getting nearby shops at ({0}, {1}) for niche {2}", _originLatitude, _originLongitude, NicheConstants.Goth);
     }
 
     private async Task Shops_Exist()
     {
         _shops =
         [
-            ShopAt(latitudeOffset: 0.001, Goth),
-            ShopAt(latitudeOffset: 0.01, Goth),
-            ShopAt(latitudeOffset: 0.2, Goth),
-            ShopAt(latitudeOffset: 0.0005, Skater),
-            ShopAt(latitudeOffset: 0.001, Vintage),
-            ShopAt(latitudeOffset: 0.01, Vintage),
-            ShopAt(latitudeOffset: 0.001, Streetwear, Y2k),
-            ShopAt(latitudeOffset: 0.002, Streetwear)
+            ShopAt(latitudeOffset: 0.001, NicheConstants.Goth),
+            ShopAt(latitudeOffset: 0.01, NicheConstants.Goth),
+            ShopAt(latitudeOffset: 0.2, NicheConstants.Goth),
+            ShopAt(latitudeOffset: 0.0005, NicheConstants.Skater),
+            ShopAt(latitudeOffset: 0.001, NicheConstants.Vintage),
+            ShopAt(latitudeOffset: 0.01, NicheConstants.Vintage),
+            ShopAt(latitudeOffset: 0.001, NicheConstants.Streetwear, NicheConstants.Y2k),
+            ShopAt(latitudeOffset: 0.002, NicheConstants.Streetwear)
         ];
 
         await ShopPersistenceProvider.Insert(_shops);
@@ -111,12 +105,10 @@ public partial class Get_Nearby_Shops_Feature : FeatureFixture
     private sealed record ValidationProblem(Dictionary<string, string[]> Errors);
 
     private ShopEntity ShopAt(double latitudeOffset, params string[] niches) =>
-        _fixture.Build<ShopEntity>()
-            .With(shop => shop.Niches, niches)
-            .With(shop => shop.Latitude, _originLatitude + latitudeOffset)
-            .With(shop => shop.Longitude, _originLongitude)
-            .With(shop => shop.CreatedAt, DateTime.UtcNow)
-            .Create();
+        ShopEntityBuilder.Build(_fixture,
+            latitude: _originLatitude + latitudeOffset,
+            longitude: _originLongitude,
+            niches: niches);
 
     private static ShopResponse Expected(ShopEntity shop) => new()
     {

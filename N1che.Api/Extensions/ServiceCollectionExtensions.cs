@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using N1che.Api.Authentication;
+using N1che.Api.Validation.Pagination;
 using N1che.Api.Validation.Shops;
+using N1che.Contracts.Filters.Pagination;
 using N1che.Contracts.Filters.Shops;
 using N1che.Domain.Interfaces;
 using N1che.Domain.Interfaces.Persistence.Readers.Niches;
@@ -89,6 +91,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddValidationDependencies(this IServiceCollection services)
     {
         services.AddSingleton<IValidator<NearbyShopsFilter>, NearbyShopsFilterValidator>();
+        services.AddSingleton<IValidator<ShopsFilter>, ShopsFilterValidator>();
+        services.AddSingleton<IValidator<PaginationFilter>, PaginationFilterValidator>();
 
         return services;
     }

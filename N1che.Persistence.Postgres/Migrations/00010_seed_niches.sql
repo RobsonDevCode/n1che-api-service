@@ -7,10 +7,11 @@ INSERT INTO niches (id, label, sub_label, description) VALUES
     ('cottagecore', 'Cottage',    'soft',         'Floral prints, linen, handmade pieces'),
     ('y2k',         'Y2K',        'retro-future', 'Low rise, chrome, butterfly clips'),
     ('techwear',    'Techwear',   'utility',      'Utility, waterproof, tactical fits'),
-    ('vintage',     'Vintage',    'archive',      'Deadstock, 80s/90s, thrift finds');
+    ('vintage',     'Vintage',    'archive',      'Deadstock, 80s/90s, thrift finds'),
+    ('western wear','Western Wear','rugged',      'Denim, boots, fringe, frontier workwear');
 
 -- +goose Down
 DELETE FROM niches WHERE id IN (
     'goth', 'oldmoney', 'skater', 'streetwear',
-    'cottagecore', 'y2k', 'techwear', 'vintage'
+    'cottagecore', 'y2k', 'techwear', 'vintage', 'western wear'
 );

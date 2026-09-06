@@ -33,7 +33,8 @@ public partial class Get_Niches_Feature : FeatureFixture
         new() { Id = "cottagecore", Label = "Cottage", SubLabel = "soft", Description = "Floral prints, linen, handmade pieces" },
         new() { Id = "y2k", Label = "Y2K", SubLabel = "retro-future", Description = "Low rise, chrome, butterfly clips" },
         new() { Id = "techwear", Label = "Techwear", SubLabel = "utility", Description = "Utility, waterproof, tactical fits" },
-        new() { Id = "vintage", Label = "Vintage", SubLabel = "archive", Description = "Deadstock, 80s/90s, thrift finds" }
+        new() { Id = "vintage", Label = "Vintage", SubLabel = "archive", Description = "Deadstock, 80s/90s, thrift finds" },
+        new() { Id = "western wear", Label = "Western Wear", SubLabel = "rugged", Description = "Denim, boots, fringe, frontier workwear" }
     ];
 
     private async Task All_Seeded_Niches_Are_Returned()
