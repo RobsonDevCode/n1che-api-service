@@ -1,14 +1,15 @@
-namespace N1che.Domain.Models.Shops;
+namespace N1che.Persistence.Postgres.Postgres.Entities.Shops;
 
-public record ShopModel
+/// <summary>A shop joined to its hours for the requested day, absent when the shop has none.</summary>
+public sealed record ShopCompositeEntity
 {
-    public required string Id { get; init; }
+    public required Guid Id { get; init; }
 
     public required string GooglePlaceId { get; init; }
 
     public required string Name { get; init; }
 
-    public required IReadOnlyCollection<string> Niches { get; init; }
+    public required string[] Niches { get; init; }
 
     public required string Address { get; init; }
 
@@ -20,7 +21,6 @@ public record ShopModel
 
     public required string PlaceStatus { get; init; }
 
-    /// <summary>Today's trading hours, absent when the shop has none recorded for today.</summary>
     public TimeOnly? OpenTime { get; init; }
 
     public TimeOnly? CloseTime { get; init; }
@@ -30,6 +30,4 @@ public record ShopModel
     public required string AddedByUserId { get; init; }
 
     public required string AddedByUsername { get; init; }
-
-    public string? PhotoUrl { get; init; }
 }

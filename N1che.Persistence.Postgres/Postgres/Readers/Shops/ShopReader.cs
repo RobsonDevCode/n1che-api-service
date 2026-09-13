@@ -21,22 +21,26 @@ public sealed class ShopReader : IShopsReader
     {
         const string sql =
             """
-            SELECT id,
-                   google_place_id,
-                   name,
-                   niches,
-                   address,
-                   ST_Y(location::geometry) AS latitude,
-                   ST_X(location::geometry) AS longitude,
-                   vote_count,
-                   place_status,
-                   created_at,
-                   added_by_user_id,
-                   added_by_username
+            SELECT shops.id,
+                   shops.google_place_id,
+                   shops.name,
+                   shops.niches,
+                   shops.address,
+                   ST_Y(shops.location::geometry) AS latitude,
+                   ST_X(shops.location::geometry) AS longitude,
+                   shops.vote_count,
+                   shops.place_status,
+                   shop_hours.open_time,
+                   shop_hours.close_time,
+                   shops.created_at,
+                   shops.added_by_user_id,
+                   shops.added_by_username
             FROM shops
-            WHERE ST_DWithin(location, ST_MakePoint(@Longitude, @Latitude)::geography, @RadiusMeters)
-            AND (cardinality(@Niches) = 0 OR niches && @Niches)
-            ORDER BY location <-> ST_MakePoint(@Longitude, @Latitude)::geography
+            LEFT JOIN shop_hours ON shop_hours.shop_id = shops.id
+                                AND shop_hours.day_of_week = EXTRACT(DOW FROM now())::int
+            WHERE ST_DWithin(shops.location, ST_MakePoint(@Longitude, @Latitude)::geography, @RadiusMeters)
+            AND (cardinality(@Niches) = 0 OR shops.niches && @Niches)
+            ORDER BY shops.location <-> ST_MakePoint(@Longitude, @Latitude)::geography
             LIMIT @Limit
             """;
 
@@ -52,7 +56,7 @@ public sealed class ShopReader : IShopsReader
         };
 
         var command = new CommandDefinition(sql, parameters, cancellationToken: cancellationToken);
-        var entities = await connection.QueryAsync<ShopEntity>(command);
+        var entities = await connection.QueryAsync<ShopCompositeEntity>(command);
 
         return entities.Select(entity => entity.ToDomainModel()).ToArray();
     }
@@ -61,21 +65,25 @@ public sealed class ShopReader : IShopsReader
     {
         const string pageSql =
             """
-            SELECT id,
-                   google_place_id,
-                   name,
-                   niches,
-                   address,
-                   ST_Y(location::geometry) AS latitude,
-                   ST_X(location::geometry) AS longitude,
-                   vote_count,
-                   place_status,
-                   created_at,
-                   added_by_user_id,
-                   added_by_username
+            SELECT shops.id,
+                   shops.google_place_id,
+                   shops.name,
+                   shops.niches,
+                   shops.address,
+                   ST_Y(shops.location::geometry) AS latitude,
+                   ST_X(shops.location::geometry) AS longitude,
+                   shops.vote_count,
+                   shops.place_status,
+                   shop_hours.open_time,
+                   shop_hours.close_time,
+                   shops.created_at,
+                   shops.added_by_user_id,
+                   shops.added_by_username
             FROM shops
-            WHERE (cardinality(@Niches) = 0 OR niches && @Niches)
-            ORDER BY vote_count DESC, created_at DESC
+            LEFT JOIN shop_hours ON shop_hours.shop_id = shops.id
+                                AND shop_hours.day_of_week = EXTRACT(DOW FROM now())::int
+            WHERE (cardinality(@Niches) = 0 OR shops.niches && @Niches)
+            ORDER BY shops.vote_count DESC, shops.created_at DESC
             LIMIT @Limit OFFSET @Offset
             """;
 
@@ -90,7 +98,7 @@ public sealed class ShopReader : IShopsReader
         };
 
         var pageCommand = new CommandDefinition(pageSql, parameters, cancellationToken: cancellationToken);
-        var entities = await connection.QueryAsync<ShopEntity>(pageCommand);
+        var entities = await connection.QueryAsync<ShopCompositeEntity>(pageCommand);
 
         var totalCount = await GetCount(filterModel, cancellationToken);
 

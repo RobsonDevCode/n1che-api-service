@@ -25,6 +25,7 @@ public partial class Get_Nearby_Shops_Feature : FeatureFixture
     private readonly double _originLongitude;
 
     private List<ShopEntity> _shops = null!;
+    private Dictionary<Guid, ShopHoursEntity> _hours = [];
     private NearbyShopsFilter _filter = null!;
     private HttpResponseMessage _response = null!;
     private Dictionary<string, object> _scopeValues = null!;
@@ -60,6 +61,13 @@ public partial class Get_Nearby_Shops_Feature : FeatureFixture
         ];
 
         await ShopPersistenceProvider.Insert(_shops);
+
+        // Every shop but the first trades today, so the left join's missing-hours path is covered too.
+        _hours = _shops.Skip(1)
+            .Select(shop => ShopHoursEntityBuilder.BuildForToday(_fixture, shop.Id))
+            .ToDictionary(hours => hours.ShopId);
+
+        await ShopPersistenceProvider.InsertHours(_hours.Values);
     }
 
     private async Task GetNearbyShops_Is_Called(NearbyShopsFilter filter)
@@ -110,22 +118,29 @@ public partial class Get_Nearby_Shops_Feature : FeatureFixture
             longitude: _originLongitude,
             niches: niches);
 
-    private static ShopResponse Expected(ShopEntity shop) => new()
+    private ShopResponse Expected(ShopEntity shop)
     {
-        Id = shop.Id.ToString(),
-        GooglePlaceId = shop.GooglePlaceId,
-        Name = shop.Name,
-        Niches = shop.Niches,
-        Address = shop.Address,
-        Latitude = shop.Latitude,
-        Longitude = shop.Longitude,
-        VoteCount = shop.VoteCount,
-        PlaceStatus = shop.PlaceStatus,
-        CreatedAt = shop.CreatedAt,
-        AddedByUserId = shop.AddedByUserId,
-        AddedByUsername = shop.AddedByUsername,
-        PhotoUrl = null
-    };
+        var hours = _hours.GetValueOrDefault(shop.Id);
+
+        return new ShopResponse
+        {
+            Id = shop.Id.ToString(),
+            GooglePlaceId = shop.GooglePlaceId,
+            Name = shop.Name,
+            Niches = shop.Niches,
+            Address = shop.Address,
+            Latitude = shop.Latitude,
+            Longitude = shop.Longitude,
+            VoteCount = shop.VoteCount,
+            PlaceStatus = shop.PlaceStatus,
+            OpenTime = hours?.OpenTime,
+            CloseTime = hours?.CloseTime,
+            CreatedAt = shop.CreatedAt,
+            AddedByUserId = shop.AddedByUserId,
+            AddedByUsername = shop.AddedByUsername,
+            PhotoUrl = null
+        };
+    }
 
     private static double DistanceMeters(double lat1, double lng1, double lat2, double lng2)
     {

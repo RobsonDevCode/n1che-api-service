@@ -1,4 +1,5 @@
 using N1che.Api.Endpoints.Niches;
+using N1che.Api.Endpoints.Routes;
 using N1che.Api.Endpoints.Shops;
 
 namespace N1che.Api.Endpoints;
@@ -9,6 +10,7 @@ internal static class EndpointBuilder
     {
         endpoints.AddNicheEndpoints();
         endpoints.AddShopEndpoints();
+        endpoints.AddRouteEndpoints();
 
         return endpoints;
     }

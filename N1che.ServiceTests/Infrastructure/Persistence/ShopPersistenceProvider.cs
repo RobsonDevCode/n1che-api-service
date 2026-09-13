@@ -25,4 +25,25 @@ internal static class ShopPersistenceProvider
                 shop);
         }
     }
+
+    internal static async Task InsertHours(IEnumerable<ShopHoursEntity> hours)
+    {
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        await connection.ExecuteAsync(
+            """
+            INSERT INTO shop_hours (id, shop_id, day_of_week, open_time, close_time)
+            VALUES (@Id, @ShopId, @DayOfWeek, @OpenTime, @CloseTime)
+            """,
+            // Dapper has no DbType for TimeOnly, so the parameters go over as offsets from midnight.
+            hours.Select(entry => new
+            {
+                entry.Id,
+                entry.ShopId,
+                entry.DayOfWeek,
+                OpenTime = entry.OpenTime.ToTimeSpan(),
+                CloseTime = entry.CloseTime.ToTimeSpan(),
+            }));
+    }
 }

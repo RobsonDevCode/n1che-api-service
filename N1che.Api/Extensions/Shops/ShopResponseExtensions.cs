@@ -32,6 +32,8 @@ public static class ShopResponseExtensions
         Longitude = shop.Longitude,
         VoteCount = shop.VoteCount,
         PlaceStatus = shop.PlaceStatus,
+        OpenTime = shop.OpenTime,
+        CloseTime = shop.CloseTime,
         CreatedAt = shop.CreatedAt,
         AddedByUserId = shop.AddedByUserId,
         AddedByUsername = shop.AddedByUsername,

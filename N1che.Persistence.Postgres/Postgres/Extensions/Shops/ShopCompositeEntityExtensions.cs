@@ -3,9 +3,9 @@ using N1che.Persistence.Postgres.Postgres.Entities.Shops;
 
 namespace N1che.Persistence.Postgres.Postgres.Extensions.Shops;
 
-public static class ShopEntityExtensions
+public static class ShopCompositeEntityExtensions
 {
-    public static ShopModel ToDomainModel(this ShopEntity entity) => new()
+    public static ShopModel ToDomainModel(this ShopCompositeEntity entity) => new()
     {
         Id = entity.Id.ToString(),
         GooglePlaceId = entity.GooglePlaceId,
@@ -16,6 +16,8 @@ public static class ShopEntityExtensions
         Longitude = entity.Longitude,
         VoteCount = entity.VoteCount,
         PlaceStatus = entity.PlaceStatus,
+        OpenTime = entity.OpenTime,
+        CloseTime = entity.CloseTime,
         CreatedAt = entity.CreatedAt,
         AddedByUserId = entity.AddedByUserId,
         AddedByUsername = entity.AddedByUsername,

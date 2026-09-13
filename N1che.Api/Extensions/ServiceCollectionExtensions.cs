@@ -5,19 +5,25 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using N1che.Api.Authentication;
 using N1che.Api.Validation.Pagination;
+using N1che.Api.Validation.Routes;
 using N1che.Api.Validation.Shops;
 using N1che.Contracts.Filters.Pagination;
+using N1che.Contracts.Filters.Routes;
 using N1che.Contracts.Filters.Shops;
 using N1che.Domain.Interfaces;
 using N1che.Domain.Interfaces.Persistence.Readers.Niches;
+using N1che.Domain.Interfaces.Persistence.Readers.Routes;
 using N1che.Domain.Interfaces.Persistence.Readers.Shops;
 using N1che.Domain.Interfaces.Services.Niches;
+using N1che.Domain.Interfaces.Services.Routes;
 using N1che.Domain.Interfaces.Services.Shops;
 using N1che.Domain.Services.Niches;
+using N1che.Domain.Services.Routes;
 using N1che.Domain.Services.Shops;
 using N1che.Persistence.Postgres.Postgres.Configuration;
 using N1che.Persistence.Postgres.Postgres.Connections;
 using N1che.Persistence.Postgres.Postgres.Readers.Niches;
+using N1che.Persistence.Postgres.Postgres.Readers.Routes;
 using N1che.Persistence.Postgres.Postgres.Readers.Shops;
 using N1che.Persistence.Postgres.Postgres.Transactions;
 using Npgsql;
@@ -43,6 +49,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<PostgresConnectionFactory>();
         services.AddScoped<INichesReader, NicheReader>();
         services.AddScoped<IShopsReader, ShopReader>();
+        services.AddScoped<IRoutesReader, RouteReader>();
 
         return services;
     }
@@ -51,6 +58,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<INicheRetrievalService, NicheRetrievalService>();
         services.AddScoped<IShopRetrievalService, ShopRetrievalService>();
+        services.AddScoped<IRouteRetrievalService, RouteRetrievalService>();
 
         return services;
     }
@@ -92,6 +100,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IValidator<NearbyShopsFilter>, NearbyShopsFilterValidator>();
         services.AddSingleton<IValidator<ShopsFilter>, ShopsFilterValidator>();
+        services.AddSingleton<IValidator<RoutesFilter>, RoutesFilterValidator>();
         services.AddSingleton<IValidator<PaginationFilter>, PaginationFilterValidator>();
 
         return services;

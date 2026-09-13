@@ -20,6 +20,11 @@ public record ShopResponse
 
     public required string PlaceStatus { get; init; }
 
+    /// <summary>Today's trading hours, absent when the shop has none recorded for today.</summary>
+    public TimeOnly? OpenTime { get; init; }
+
+    public TimeOnly? CloseTime { get; init; }
+
     public required DateTime CreatedAt { get; init; }
 
     public required string AddedByUserId { get; init; }

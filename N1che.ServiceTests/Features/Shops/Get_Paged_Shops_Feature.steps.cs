@@ -29,6 +29,7 @@ public partial class Get_Paged_Shops_Feature : FeatureFixture
     private readonly IFixture _fixture;
 
     private List<ShopEntity> _shops;
+    private Dictionary<Guid, ShopHoursEntity> _hours = [];
     private ShopsFilter _filter;
     private PaginationFilter _pagination;
     private HttpResponseMessage _response;
@@ -56,6 +57,13 @@ public partial class Get_Paged_Shops_Feature : FeatureFixture
             latitude: Latitude, longitude: Longitude, niches: niche);
 
         await ShopPersistenceProvider.Insert(_shops);
+
+        // Every shop but the first trades today, so the left join's missing-hours path is covered too.
+        _hours = _shops.Skip(1)
+            .Select(shop => ShopHoursEntityBuilder.BuildForToday(_fixture, shop.Id))
+            .ToDictionary(hours => hours.ShopId);
+
+        await ShopPersistenceProvider.InsertHours(_hours.Values);
     }
 
     private async Task GetShopsPage_Is_Called(ShopsFilter filter, PaginationFilter pagination)
@@ -115,20 +123,27 @@ public partial class Get_Paged_Shops_Feature : FeatureFixture
         problem!.Errors.Should().ContainKey(field);
     }
 
-    private static ShopResponse Expected(ShopEntity shop) => new()
+    private ShopResponse Expected(ShopEntity shop)
     {
-        Id = shop.Id.ToString(),
-        GooglePlaceId = shop.GooglePlaceId,
-        Name = shop.Name,
-        Niches = shop.Niches,
-        Address = shop.Address,
-        Latitude = shop.Latitude,
-        Longitude = shop.Longitude,
-        VoteCount = shop.VoteCount,
-        PlaceStatus = shop.PlaceStatus,
-        CreatedAt = shop.CreatedAt,
-        AddedByUserId = shop.AddedByUserId,
-        AddedByUsername = shop.AddedByUsername,
-        PhotoUrl = null
-    };
+        var hours = _hours.GetValueOrDefault(shop.Id);
+
+        return new ShopResponse
+        {
+            Id = shop.Id.ToString(),
+            GooglePlaceId = shop.GooglePlaceId,
+            Name = shop.Name,
+            Niches = shop.Niches,
+            Address = shop.Address,
+            Latitude = shop.Latitude,
+            Longitude = shop.Longitude,
+            VoteCount = shop.VoteCount,
+            PlaceStatus = shop.PlaceStatus,
+            OpenTime = hours?.OpenTime,
+            CloseTime = hours?.CloseTime,
+            CreatedAt = shop.CreatedAt,
+            AddedByUserId = shop.AddedByUserId,
+            AddedByUsername = shop.AddedByUsername,
+            PhotoUrl = null
+        };
+    }
 }
