@@ -1,4 +1,5 @@
 using Dapper;
+using N1che.Domain.Extensions;
 using N1che.Domain.Interfaces.Persistence.Readers.Shops;
 using N1che.Domain.Models.Pagination;
 using N1che.Domain.Models.Shops;
@@ -16,6 +17,8 @@ public sealed class ShopReader : IShopsReader
     {
         _connectionFactory = connectionFactory;
     }
+
+    private static int CurrentDayOfWeek => DateTime.UtcNow.ToDayOfWeekIndex();
 
     public async Task<IReadOnlyCollection<ShopModel>> GetNearby(NearbyShopsFilter filter, CancellationToken cancellationToken)
     {
@@ -37,7 +40,7 @@ public sealed class ShopReader : IShopsReader
                    shops.added_by_username
             FROM shops
             LEFT JOIN shop_hours ON shop_hours.shop_id = shops.id
-                                AND shop_hours.day_of_week = EXTRACT(DOW FROM now())::int
+                                AND shop_hours.day_of_week = @DayOfWeek
             WHERE ST_DWithin(shops.location, ST_MakePoint(@Longitude, @Latitude)::geography, @RadiusMeters)
             AND (cardinality(@Niches) = 0 OR shops.niches && @Niches)
             ORDER BY shops.location <-> ST_MakePoint(@Longitude, @Latitude)::geography
@@ -53,6 +56,7 @@ public sealed class ShopReader : IShopsReader
             filter.RadiusMeters,
             Niches = filter.Niche is null ? [] : new[] { filter.Niche },
             filter.Limit,
+            DayOfWeek = CurrentDayOfWeek,
         };
 
         var command = new CommandDefinition(sql, parameters, cancellationToken: cancellationToken);
@@ -81,7 +85,7 @@ public sealed class ShopReader : IShopsReader
                    shops.added_by_username
             FROM shops
             LEFT JOIN shop_hours ON shop_hours.shop_id = shops.id
-                                AND shop_hours.day_of_week = EXTRACT(DOW FROM now())::int
+                                AND shop_hours.day_of_week = @DayOfWeek
             WHERE (cardinality(@Niches) = 0 OR shops.niches && @Niches)
             ORDER BY shops.vote_count DESC, shops.created_at DESC
             LIMIT @Limit OFFSET @Offset
@@ -95,6 +99,7 @@ public sealed class ShopReader : IShopsReader
             Niches = filterModel.Niche ?? [],
             Limit = pagination.PageSize,
             Offset = (pagination.Page - 1) * pagination.PageSize,
+            DayOfWeek = CurrentDayOfWeek,
         };
 
         var pageCommand = new CommandDefinition(pageSql, parameters, cancellationToken: cancellationToken);
@@ -109,6 +114,38 @@ public sealed class ShopReader : IShopsReader
             Page = pagination.Page,
             PageSize = pagination.PageSize,
         };
+    }
+
+    public async Task<ShopModel?> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        const string sql =
+            """
+            SELECT shops.id,
+                   shops.google_place_id,
+                   shops.name,
+                   shops.niches,
+                   shops.address,
+                   ST_Y(shops.location::geometry) AS latitude,
+                   ST_X(shops.location::geometry) AS longitude,
+                   shops.vote_count,
+                   shops.place_status,
+                   shop_hours.open_time,
+                   shop_hours.close_time,
+                   shops.created_at,
+                   shops.added_by_user_id,
+                   shops.added_by_username
+            FROM shops
+            LEFT JOIN shop_hours ON shop_hours.shop_id = shops.id
+                                AND shop_hours.day_of_week = @DayOfWeek
+            WHERE shops.id = @Id
+            """;
+
+        await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
+
+        var command = new CommandDefinition(sql, new { Id = id, DayOfWeek = CurrentDayOfWeek }, cancellationToken: cancellationToken);
+        var entity = await connection.QuerySingleOrDefaultAsync<ShopCompositeEntity>(command);
+
+        return entity?.ToDomainModel();
     }
 
     public async Task<long> GetCount(ShopsFilterModel filterModel, CancellationToken cancellationToken)

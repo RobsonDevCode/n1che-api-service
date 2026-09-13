@@ -26,6 +26,10 @@ internal static class GetShopsEndpoints
             .WithSummary("Get Nearby Shops")
             .WithDescription("Get shops within a radius of a location, optionally filtered by niche, nearest first");
 
+        group.MapGet("{id:guid}", GetById)
+            .WithSummary("Get Shop By Id")
+            .WithDescription("Get a single shop's static detail; votes and reviews are served by their own endpoints");
+
         return group;
     }
 
@@ -55,6 +59,24 @@ internal static class GetShopsEndpoints
         logger.LogInformation("Shops page retrieved");
 
         return TypedResults.Ok(page.ToPagedResponse());
+    }
+
+    private static async Task<Ok<ShopDetailResponse>> GetById(
+        [FromRoute] Guid id,
+        [FromServices] IShopRetrievalService shopRetrievalService,
+        [FromServices] ILoggerFactory loggerFactory,
+        CancellationToken cancellationToken)
+    {
+        var logger = loggerFactory.CreateLogger("Get Shop By Id");
+        using var _ = logger.BeginScope(new Dictionary<string, object> { ["ShopId"] = id });
+
+        logger.LogInformation("Getting shop {ShopId}", id);
+
+        var shop = await shopRetrievalService.GetByIdAsync(id, cancellationToken);
+
+        logger.LogInformation("Shop retrieved");
+
+        return TypedResults.Ok(shop.ToDetailResponse());
     }
 
     private static async Task<Ok<IReadOnlyCollection<ShopResponse>>> GetNearby(

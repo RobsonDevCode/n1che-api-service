@@ -7,6 +7,8 @@ public sealed class PostgresConnection(NpgsqlConnection connection, bool ownsCon
 {
     public Task<IEnumerable<T>> QueryAsync<T>(CommandDefinition command) => connection.QueryAsync<T>(command);
 
+    public Task<T?> QuerySingleOrDefaultAsync<T>(CommandDefinition command) => connection.QuerySingleOrDefaultAsync<T>(command);
+
     public Task<int> ExecuteAsync(CommandDefinition command) => connection.ExecuteAsync(command);
 
     public Task<T> ExecuteScalarAsync<T>(CommandDefinition command) => connection.ExecuteScalarAsync<T>(command);

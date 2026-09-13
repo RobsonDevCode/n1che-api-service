@@ -21,6 +21,24 @@ public static class ShopResponseExtensions
         }
     };
 
+    public static ShopDetailResponse ToDetailResponse(this ShopModel shop) => new()
+    {
+        Id = shop.Id,
+        GooglePlaceId = shop.GooglePlaceId,
+        Name = shop.Name,
+        Niches = shop.Niches,
+        Address = shop.Address,
+        Latitude = shop.Latitude,
+        Longitude = shop.Longitude,
+        PlaceStatus = shop.PlaceStatus,
+        OpenTime = shop.OpenTime,
+        CloseTime = shop.CloseTime,
+        CreatedAt = shop.CreatedAt,
+        AddedByUserId = shop.AddedByUserId,
+        AddedByUsername = shop.AddedByUsername,
+        PhotoUrl = shop.PhotoUrl,
+    };
+
     public static ShopResponse ToResponse(this ShopModel shop) => new()
     {
         Id = shop.Id,

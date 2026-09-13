@@ -26,6 +26,29 @@ internal static class ShopPersistenceProvider
         }
     }
 
+    internal static async Task Update(ShopEntity shop)
+    {
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        await connection.ExecuteAsync(
+            """
+            UPDATE shops
+            SET google_place_id = @GooglePlaceId,
+                name = @Name,
+                niches = @Niches,
+                address = @Address,
+                location = ST_MakePoint(@Longitude, @Latitude)::geography,
+                vote_count = @VoteCount,
+                place_status = @PlaceStatus,
+                created_at = @CreatedAt,
+                added_by_user_id = @AddedByUserId,
+                added_by_username = @AddedByUsername
+            WHERE id = @Id
+            """,
+            shop);
+    }
+
     internal static async Task InsertHours(IEnumerable<ShopHoursEntity> hours)
     {
         await using var connection = new NpgsqlConnection(ConnectionString);

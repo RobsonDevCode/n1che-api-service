@@ -18,6 +18,11 @@ internal static class ShopsClient
         return await client.GetAsync($"shops/nearby{query}");
     }
 
+    public static async Task<HttpResponseMessage> GetShopById(this HttpClient client, Guid id)
+    {
+        return await client.GetAsync($"shops/{id}");
+    }
+
     public static async Task<HttpResponseMessage> GetShopsPage(this HttpClient client, ShopsFilter filter, PaginationFilter pagination)
     {
         var builder = new QueryBuilder();
