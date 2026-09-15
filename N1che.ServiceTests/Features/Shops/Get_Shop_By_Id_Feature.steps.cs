@@ -15,6 +15,9 @@ namespace N1che.ServiceTests.Features.Shops;
 
 public partial class Get_Shop_By_Id_Feature : FeatureFixture
 {
+    // The endpoint's scope is disposed as the exception unwinds, so the handler's warning carries none.
+    private static readonly Dictionary<string, object> NoScopes = [];
+
     private readonly IFixture _fixture;
 
     // Built in the constructor so every scenario knows the id it is going to ask for.
@@ -25,6 +28,7 @@ public partial class Get_Shop_By_Id_Feature : FeatureFixture
     private HttpResponseMessage _response = null!;
     private Dictionary<string, object> _scopeValues = null!;
     private string _endpointLog = null!;
+    private string _notFoundLog = null!;
 
     private static FakeLoggerProvider TestLogger => TestWebApplicationFactory.Instance.FakeLogger;
     private static HttpClient Client => TestWebApplicationFactory.Instance.CreateAuthenticatedClient();
@@ -72,6 +76,7 @@ public partial class Get_Shop_By_Id_Feature : FeatureFixture
         _requestedId = id;
         _scopeValues = new Dictionary<string, object> { ["ShopId"] = id };
         _endpointLog = $"Getting shop {id}";
+        _notFoundLog = $"Shop {id} not found";
 
         _response = await Client.GetShopById(id);
     }

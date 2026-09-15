@@ -18,6 +18,7 @@ internal sealed class GlobalExceptionHandler : IExceptionHandler
         var (statusCode, title) = exception switch
         {
             DuplicateRequestException => (StatusCodes.Status409Conflict, exception.Message),
+            UnauthorizedException => (StatusCodes.Status401Unauthorized, exception.Message),
             NotFoundException => (StatusCodes.Status404NotFound, exception.Message),
             BadRequestException => (StatusCodes.Status400BadRequest, exception.Message),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred")

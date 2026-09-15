@@ -49,6 +49,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<PostgresConnectionFactory>();
         services.AddScoped<INichesReader, NicheReader>();
         services.AddScoped<IShopsReader, ShopReader>();
+        services.AddScoped<IShopInteractionsReader, ShopInteractionsReader>();
         services.AddScoped<IRoutesReader, RouteReader>();
 
         return services;
@@ -58,6 +59,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<INicheRetrievalService, NicheRetrievalService>();
         services.AddScoped<IShopRetrievalService, ShopRetrievalService>();
+        services.AddScoped<IShopInteractionsRetrievalService, ShopInteractionsRetrievalService>();
         services.AddScoped<IRouteRetrievalService, RouteRetrievalService>();
 
         return services;

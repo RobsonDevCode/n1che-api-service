@@ -28,7 +28,9 @@ public partial class Get_Shop_By_Id_Feature
             given => The_Shop_Exists(),
             when => GetShopById_Is_Called(_shop.Id),
             then => HttpResponse.Status_Code_Is(_response, HttpStatusCode.OK),
-            and => The_Shop_Is_Returned());
+            and => The_Shop_Is_Returned(),
+            and => Logs.There_Should_Be_A_Log(_endpointLog, LogLevel.Information, _scopeValues, TestLogger),
+            and => Logs.There_Should_Be_A_Log(SuccessLog, LogLevel.Information, _scopeValues, TestLogger));
     }
 
     [Scenario]
@@ -37,7 +39,10 @@ public partial class Get_Shop_By_Id_Feature
         await Runner.RunScenarioAsync(
             when => GetShopById_Is_Called(Guid.NewGuid()),
             then => HttpResponse.Status_Code_Is(_response, HttpStatusCode.NotFound),
-            and => The_Response_Is_Shop_Not_Found());
+            and => The_Response_Is_Shop_Not_Found(),
+            and => Logs.There_Should_Be_A_Log(_endpointLog, LogLevel.Information, _scopeValues, TestLogger),
+            and => Logs.There_Should_Be_A_Log(_notFoundLog, LogLevel.Warning, NoScopes, TestLogger),
+            and => Logs.There_Should_Not_Be_A_Log(SuccessLog, LogLevel.Information, _scopeValues, TestLogger));
     }
 
     [Scenario]
@@ -49,6 +54,8 @@ public partial class Get_Shop_By_Id_Feature
             when => The_Shop_Is_Renamed_In_The_Database(),
             and => GetShopById_Is_Called(_shop.Id),
             then => HttpResponse.Status_Code_Is(_response, HttpStatusCode.OK),
-            and => The_Shop_Is_Returned());
+            and => The_Shop_Is_Returned(),
+            and => Logs.There_Should_Be_A_Log(_endpointLog, LogLevel.Information, _scopeValues, TestLogger),
+            and => Logs.There_Should_Be_A_Log(SuccessLog, LogLevel.Information, _scopeValues, TestLogger));
     }
 }

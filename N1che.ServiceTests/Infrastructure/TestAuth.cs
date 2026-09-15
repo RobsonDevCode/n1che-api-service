@@ -19,20 +19,30 @@ internal static class TestAuth
 
     public static SymmetricSecurityKey SigningKey => new(Encoding.UTF8.GetBytes(SigningSecret));
 
-    public static string GenerateToken(string sub = Sub, string username = Username)
+    public static string GenerateToken(string? sub = Sub, string? username = Username)
     {
+        var claims = new Dictionary<string, object>
+        {
+            ["client_id"] = ClientId,
+            ["token_use"] = "access"
+        };
+
+        if (sub is not null)
+        {
+            claims["sub"] = sub;
+        }
+
+        if (username is not null)
+        {
+            claims["username"] = username;
+        }
+
         var descriptor = new SecurityTokenDescriptor
         {
             Issuer = Issuer,
             Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(SigningKey, SecurityAlgorithms.HmacSha256),
-            Claims = new Dictionary<string, object>
-            {
-                ["sub"] = sub,
-                ["username"] = username,
-                ["client_id"] = ClientId,
-                ["token_use"] = "access"
-            }
+            Claims = claims
         };
 
         return new JsonWebTokenHandler().CreateToken(descriptor);
