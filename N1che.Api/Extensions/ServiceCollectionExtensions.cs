@@ -10,10 +10,12 @@ using N1che.Api.Validation.Shops;
 using N1che.Contracts.Filters.Pagination;
 using N1che.Contracts.Filters.Routes;
 using N1che.Contracts.Filters.Shops;
+using N1che.Contracts.Requests.Shops;
 using N1che.Domain.Interfaces;
 using N1che.Domain.Interfaces.Persistence.Readers.Niches;
 using N1che.Domain.Interfaces.Persistence.Readers.Routes;
 using N1che.Domain.Interfaces.Persistence.Readers.Shops;
+using N1che.Domain.Interfaces.Persistence.Writers.Shops;
 using N1che.Domain.Interfaces.Services.Niches;
 using N1che.Domain.Interfaces.Services.Routes;
 using N1che.Domain.Interfaces.Services.Shops;
@@ -26,6 +28,8 @@ using N1che.Persistence.Postgres.Postgres.Readers.Niches;
 using N1che.Persistence.Postgres.Postgres.Readers.Routes;
 using N1che.Persistence.Postgres.Postgres.Readers.Shops;
 using N1che.Persistence.Postgres.Postgres.Transactions;
+using N1che.Persistence.Postgres.Postgres.TypeHandlers;
+using N1che.Persistence.Postgres.Postgres.Writers.Shops;
 using Npgsql;
 
 namespace N1che.Api.Extensions;
@@ -35,6 +39,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddPostgres(this IServiceCollection services, IConfiguration configuration)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
+        SqlMapper.AddTypeHandler(new TimeOnlyTypeHandler());
 
         services.Configure<PostgresOptions>(configuration.GetSection("Postgres"));
 
@@ -51,6 +56,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IShopsReader, ShopReader>();
         services.AddScoped<IShopInteractionsReader, ShopInteractionsReader>();
         services.AddScoped<IRoutesReader, RouteReader>();
+        services.AddScoped<IShopsWriter, ShopWriter>();
+        services.AddScoped<IShopHoursWriter, ShopHoursWriter>();
 
         return services;
     }
@@ -60,6 +67,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<INicheRetrievalService, NicheRetrievalService>();
         services.AddScoped<IShopRetrievalService, ShopRetrievalService>();
         services.AddScoped<IShopInteractionsRetrievalService, ShopInteractionsRetrievalService>();
+        services.AddScoped<IShopCreationService, ShopCreationService>();
         services.AddScoped<IRouteRetrievalService, RouteRetrievalService>();
 
         return services;
@@ -100,6 +108,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddValidationDependencies(this IServiceCollection services)
     {
+        services.AddSingleton<IValidator<CreateShopRequest>, CreateShopRequestValidator>();
         services.AddSingleton<IValidator<NearbyShopsFilter>, NearbyShopsFilterValidator>();
         services.AddSingleton<IValidator<ShopsFilter>, ShopsFilterValidator>();
         services.AddSingleton<IValidator<RoutesFilter>, RoutesFilterValidator>();

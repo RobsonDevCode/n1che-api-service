@@ -7,6 +7,7 @@ internal static class ShopEndpointBuilder
         endpoints.MapGroup("shops")
             .AddGetShopsEndpoints()
             .AddGetShopInteractionsEndpoints()
+            .AddCreateShopEndpoints()
             .RequireAuthorization()
             .WithTags("shops");
 

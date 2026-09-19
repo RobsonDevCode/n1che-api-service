@@ -5,10 +5,6 @@ namespace N1che.Api.Validation.Routes;
 
 internal sealed class RoutesFilterValidator : AbstractValidator<RoutesFilter>
 {
-    private const double MinLatitude = -90;
-    private const double MaxLatitude = 90;
-    private const double MinLongitude = -180;
-    private const double MaxLongitude = 180;
     private const double MinRadiusMeters = 1;
     private const double MaxRadiusMeters = 50_000;
     private const int MinLimit = 1;
@@ -17,13 +13,9 @@ internal sealed class RoutesFilterValidator : AbstractValidator<RoutesFilter>
 
     public RoutesFilterValidator()
     {
-        RuleFor(filter => filter.Lat)
-            .InclusiveBetween(MinLatitude, MaxLatitude)
-            .WithMessage($"Latitude must be between {MinLatitude} and {MaxLatitude}.");
+        RuleFor(filter => filter.Lat).MustBeALatitude();
 
-        RuleFor(filter => filter.Lng)
-            .InclusiveBetween(MinLongitude, MaxLongitude)
-            .WithMessage($"Longitude must be between {MinLongitude} and {MaxLongitude}.");
+        RuleFor(filter => filter.Lng).MustBeALongitude();
 
         RuleFor(filter => filter.Radius)
             .Must(radius => radius is >= MinRadiusMeters and <= MaxRadiusMeters)

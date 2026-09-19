@@ -1,5 +1,6 @@
 using LightBDD.XUnit2;
 using N1che.ServiceTests.Infrastructure;
+using N1che.ServiceTests.Infrastructure.Google;
 using Testcontainers.PostgreSql;
 
 [assembly: ConfigureLightBddScopeAttribute]
@@ -25,12 +26,16 @@ internal class ConfigureLightBddScopeAttribute : LightBddScopeAttribute
         Environment.SetEnvironmentVariable("Cognito__UserPoolId", TestAuth.UserPoolId);
         Environment.SetEnvironmentVariable("Cognito__ClientId", TestAuth.ClientId);
 
+        Environment.SetEnvironmentVariable("GooglePlaces__BaseUrl", GooglePlacesMock.Start());
+        Environment.SetEnvironmentVariable("GooglePlaces__ApiKey", GooglePlacesMock.ApiKey);
+
         TestWebApplicationFactory.Initialize(_ => { });
     }
 
     protected override void OnTearDown()
     {
         TestWebApplicationFactory.Dispose(_ => { });
+        GooglePlacesMock.Stop();
         _postgresContainer?.DisposeAsync().GetAwaiter().GetResult();
     }
 }

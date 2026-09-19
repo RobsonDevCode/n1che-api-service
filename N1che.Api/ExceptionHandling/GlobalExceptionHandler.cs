@@ -20,7 +20,8 @@ internal sealed class GlobalExceptionHandler : IExceptionHandler
             DuplicateRequestException => (StatusCodes.Status409Conflict, exception.Message),
             UnauthorizedException => (StatusCodes.Status401Unauthorized, exception.Message),
             NotFoundException => (StatusCodes.Status404NotFound, exception.Message),
-            BadRequestException => (StatusCodes.Status400BadRequest, exception.Message),
+            InvalidRequestException => (StatusCodes.Status400BadRequest, exception.Message),
+            GooglePlacesException => (StatusCodes.Status502BadGateway, exception.Message),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred")
         };
 

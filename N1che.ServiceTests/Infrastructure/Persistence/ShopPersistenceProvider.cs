@@ -59,14 +59,58 @@ internal static class ShopPersistenceProvider
             INSERT INTO shop_hours (id, shop_id, day_of_week, open_time, close_time)
             VALUES (@Id, @ShopId, @DayOfWeek, @OpenTime, @CloseTime)
             """,
-            // Dapper has no DbType for TimeOnly, so the parameters go over as offsets from midnight.
-            hours.Select(entry => new
-            {
-                entry.Id,
-                entry.ShopId,
-                entry.DayOfWeek,
-                OpenTime = entry.OpenTime.ToTimeSpan(),
-                CloseTime = entry.CloseTime.ToTimeSpan(),
-            }));
+            hours);
+    }
+
+    internal static async Task<ShopEntity> GetByGooglePlaceId(string googlePlaceId)
+    {
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        return await connection.QuerySingleAsync<ShopEntity>(
+            """
+            SELECT id,
+                   google_place_id,
+                   name,
+                   niches,
+                   address,
+                   ST_Y(location::geometry) AS latitude,
+                   ST_X(location::geometry) AS longitude,
+                   vote_count,
+                   place_status,
+                   created_at,
+                   added_by_user_id,
+                   added_by_username
+            FROM shops
+            WHERE google_place_id = @googlePlaceId
+            """,
+            new { googlePlaceId });
+    }
+
+    internal static async Task<int> CountByGooglePlaceId(string googlePlaceId)
+    {
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        return await connection.ExecuteScalarAsync<int>(
+            "SELECT COUNT(*) FROM shops WHERE google_place_id = @googlePlaceId",
+            new { googlePlaceId });
+    }
+
+    internal static async Task<IReadOnlyCollection<ShopHoursEntity>> GetHours(Guid shopId)
+    {
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        var hours = await connection.QueryAsync<ShopHoursEntity>(
+            """
+            SELECT id, shop_id, day_of_week, open_time, close_time
+            FROM shop_hours
+            WHERE shop_id = @shopId
+            ORDER BY day_of_week
+            """,
+            new { shopId });
+
+        return hours.ToArray();
     }
 }

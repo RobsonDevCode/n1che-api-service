@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using N1che.Api.Endpoints;
 using N1che.Api.ExceptionHandling;
 using N1che.Api.Extensions;
+using N1che.Api.Extensions.ThirdPartyClients;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddMemoryCache();
 builder.Services.AddPostgres(builder.Configuration);
 builder.Services.AddDomainDependencies();
+builder.Services.AddGooglePlacesClient(builder.Configuration);
 builder.Services.AddCognitoAuthentication(builder.Configuration);
 builder.Services.AddValidationDependencies();
 builder.Services.AddN1cheHealthChecks();

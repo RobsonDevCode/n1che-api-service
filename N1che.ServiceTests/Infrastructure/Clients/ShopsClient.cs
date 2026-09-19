@@ -1,10 +1,17 @@
+using System.Net.Http.Json;
 using N1che.Contracts.Filters.Pagination;
 using N1che.Contracts.Filters.Shops;
+using N1che.Contracts.Requests.Shops;
 
 namespace N1che.ServiceTests.Infrastructure.Clients;
 
 internal static class ShopsClient
 {
+    public static async Task<HttpResponseMessage> CreateShop(this HttpClient client, CreateShopRequest request)
+    {
+        return await client.PostAsJsonAsync("shops", request);
+    }
+
     public static async Task<HttpResponseMessage> GetNearbyShops(this HttpClient client, NearbyShopsFilter filter)
     {
         var query = new QueryBuilder()
