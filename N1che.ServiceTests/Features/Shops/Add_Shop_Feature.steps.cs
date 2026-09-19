@@ -119,7 +119,8 @@ public partial class Add_Shop_Feature : FeatureFixture
         _rejectedPlaceMessage = $"Google place {_googlePlaceId} cannot be added.";
         _unknownPlaceLog = $"Google has no place {_googlePlaceId}";
         _permanentlyClosedLog = $"Google place {_googlePlaceId} is permanently closed";
-        _googleFailureLog = $"Google Places answered {(int)RejectedApiKeyStatus} for place {_googlePlaceId}";
+        _googleFailureLog =
+            $"Google Places answered {(int)RejectedApiKeyStatus} for place {_googlePlaceId}: {GooglePlacesMock.ErrorBody}";
     }
 
     private Task The_Place_Trades(params TradingPeriod[] periods)

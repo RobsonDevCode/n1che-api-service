@@ -1,4 +1,6 @@
 using System.Net;
+using N1che.Contracts.Filters.Places;
+using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -15,6 +17,13 @@ internal static class GooglePlacesMock
     internal const string OperationalStatus = "OPERATIONAL";
     internal const string PermanentlyClosedStatus = "CLOSED_PERMANENTLY";
 
+    // Google says why it rejected a call in the body, which is the only place the reason exists.
+    internal const string ErrorBody =
+        """{"error":{"code":403,"message":"API key not valid","status":"PERMISSION_DENIED"}}""";
+
+    // Mirrors the page size the client asks Google for, which is Google's per-page maximum.
+    internal const int SearchPageSize = 20;
+
     // The key and field mask are part of the match, so a client that sends the wrong ones gets a 404
     // instead of a stubbed place — every scenario then fails, not just one that thinks to assert it.
     private const string ApiKeyHeader = "X-Goog-Api-Key";
@@ -22,6 +31,11 @@ internal static class GooglePlacesMock
 
     private const string PlaceDetailsFieldMask =
         "businessStatus,displayName,formattedAddress,location,regularOpeningHours";
+
+    private const string PlaceSearchFieldMask =
+        "places.id,places.displayName,places.formattedAddress,places.location,places.photos";
+
+    private const string SearchPath = "/v1/places:searchText";
 
     private const string LanguageCode = "en";
 
@@ -60,7 +74,7 @@ internal static class GooglePlacesMock
     {
         Server
             .Given(RequestFor(googlePlaceId))
-            .RespondWith(Response.Create().WithStatusCode(statusCode));
+            .RespondWith(Response.Create().WithStatusCode(statusCode).WithBody(ErrorBody));
     }
 
     private static IRequestBuilder RequestFor(string googlePlaceId) =>
@@ -69,4 +83,57 @@ internal static class GooglePlacesMock
             .UsingGet()
             .WithHeader(ApiKeyHeader, ApiKey)
             .WithHeader(FieldMaskHeader, PlaceDetailsFieldMask);
+
+    internal static void ReturnsSearchResults(PlacesSearchFilter filter, params GoogleSearchResult[] results)
+    {
+        Server
+            .Given(SearchRequestFor(filter))
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithBodyAsJson(new
+                {
+                    // Google omits the field entirely when nothing matched, rather than sending an empty array.
+                    places = results.Length == 0
+                        ? null
+                        : results.Select(result => new
+                        {
+                            id = result.GooglePlaceId,
+                            displayName = new { text = result.Name, languageCode = LanguageCode },
+                            formattedAddress = result.Address,
+                            location = new { latitude = result.Latitude, longitude = result.Longitude },
+                            photos = result.PhotoName is null
+                                ? null
+                                : new[] { new { name = result.PhotoName } }
+                        }).ToArray()
+                }));
+    }
+
+    internal static void AnswersSearchWith(PlacesSearchFilter filter, HttpStatusCode statusCode)
+    {
+        Server
+            .Given(SearchRequestFor(filter))
+            .RespondWith(Response.Create().WithStatusCode(statusCode).WithBody(ErrorBody));
+    }
+
+    // The search box is part of the match, so a client that widens, narrows or drops the caller's area
+    // gets no stubbed places rather than quietly searching somewhere else.
+    private static IRequestBuilder SearchRequestFor(PlacesSearchFilter filter) =>
+        Request.Create()
+            .WithPath(SearchPath)
+            .UsingPost()
+            .WithHeader(ApiKeyHeader, ApiKey)
+            .WithHeader(FieldMaskHeader, PlaceSearchFieldMask)
+            .WithBody(new JsonPartialMatcher(new
+            {
+                textQuery = filter.Query,
+                pageSize = SearchPageSize,
+                locationRestriction = new
+                {
+                    rectangle = new
+                    {
+                        low = new { latitude = filter.SwLat, longitude = filter.SwLng },
+                        high = new { latitude = filter.NeLat, longitude = filter.NeLng }
+                    }
+                }
+            }));
 }

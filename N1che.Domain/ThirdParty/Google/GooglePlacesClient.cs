@@ -16,6 +16,9 @@ public sealed class GooglePlacesClient : IGooglePlacesClient
     private const string PlaceDetailsFieldMask =
         "businessStatus,displayName,formattedAddress,location,regularOpeningHours";
 
+    private const string PlaceSearchFieldMask =
+        "places.id,places.displayName,places.formattedAddress,places.location,places.photos";
+
     private readonly HttpClient _httpClient;
     private readonly ILogger<GooglePlacesClient> _logger;
 
@@ -41,8 +44,10 @@ public sealed class GooglePlacesClient : IGooglePlacesClient
 
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogError("Google Places answered {StatusCode} for place {GooglePlaceId}",
-                (int)response.StatusCode, googlePlaceId);
+            var error = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            _logger.LogError("Google Places answered {StatusCode} for place {GooglePlaceId}: {Error}",
+                (int)response.StatusCode, googlePlaceId, error);
 
             throw new GooglePlacesException();
         }
@@ -50,5 +55,33 @@ public sealed class GooglePlacesClient : IGooglePlacesClient
         var details = await response.Content.ReadFromJsonAsync<PlaceDetailsResponse>(cancellationToken);
 
         return details?.ToDomainModel();
+    }
+
+    public async Task<IReadOnlyCollection<PlaceModel>> SearchPlaces(
+        PlacesSearchFilterModel filter, CancellationToken cancellationToken)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, "v1/places:searchText")
+        {
+            Content = JsonContent.Create(filter.ToSearchRequest())
+        };
+        request.Headers.Add(FieldMaskHeader, PlaceSearchFieldMask);
+
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        // Unlike a place id, a search Google rejects is not something the caller can be told to fix —
+        // the box and text were validated before they got here — so every failure is Google's.
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            _logger.LogError("Google Places answered {StatusCode} for search {Query}: {Error}",
+                (int)response.StatusCode, filter.Query, error);
+
+            throw new GooglePlacesException();
+        }
+
+        var results = await response.Content.ReadFromJsonAsync<PlaceSearchResponse>(cancellationToken);
+
+        return results?.ToDomainModels() ?? [];
     }
 }

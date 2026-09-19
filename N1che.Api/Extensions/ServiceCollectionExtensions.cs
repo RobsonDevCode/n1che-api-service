@@ -5,9 +5,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using N1che.Api.Authentication;
 using N1che.Api.Validation.Pagination;
+using N1che.Api.Validation.Places;
 using N1che.Api.Validation.Routes;
 using N1che.Api.Validation.Shops;
 using N1che.Contracts.Filters.Pagination;
+using N1che.Contracts.Filters.Places;
 using N1che.Contracts.Filters.Routes;
 using N1che.Contracts.Filters.Shops;
 using N1che.Contracts.Requests.Shops;
@@ -17,9 +19,11 @@ using N1che.Domain.Interfaces.Persistence.Readers.Routes;
 using N1che.Domain.Interfaces.Persistence.Readers.Shops;
 using N1che.Domain.Interfaces.Persistence.Writers.Shops;
 using N1che.Domain.Interfaces.Services.Niches;
+using N1che.Domain.Interfaces.Services.Places;
 using N1che.Domain.Interfaces.Services.Routes;
 using N1che.Domain.Interfaces.Services.Shops;
 using N1che.Domain.Services.Niches;
+using N1che.Domain.Services.Places;
 using N1che.Domain.Services.Routes;
 using N1che.Domain.Services.Shops;
 using N1che.Persistence.Postgres.Postgres.Configuration;
@@ -69,6 +73,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IShopInteractionsRetrievalService, ShopInteractionsRetrievalService>();
         services.AddScoped<IShopCreationService, ShopCreationService>();
         services.AddScoped<IRouteRetrievalService, RouteRetrievalService>();
+        services.AddScoped<IPlaceRetrievalService, PlaceRetrievalService>();
 
         return services;
     }
@@ -112,6 +117,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IValidator<NearbyShopsFilter>, NearbyShopsFilterValidator>();
         services.AddSingleton<IValidator<ShopsFilter>, ShopsFilterValidator>();
         services.AddSingleton<IValidator<RoutesFilter>, RoutesFilterValidator>();
+        services.AddSingleton<IValidator<PlacesSearchFilter>, PlacesSearchFilterValidator>();
         services.AddSingleton<IValidator<PaginationFilter>, PaginationFilterValidator>();
 
         return services;
