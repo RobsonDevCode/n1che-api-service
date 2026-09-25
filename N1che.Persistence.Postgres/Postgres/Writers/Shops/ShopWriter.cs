@@ -70,4 +70,36 @@ public sealed class ShopWriter : IShopsWriter
             throw new DuplicateRequestException(EntityTypes.Shop, newShop.GooglePlaceId);
         }
     }
+
+    public async Task IncrementVoteCount(Guid shopId, CancellationToken cancellationToken)
+    {
+        const string sql =
+            """
+            UPDATE shops
+            SET vote_count = vote_count + 1,
+                updated_at = now()
+            WHERE id = @ShopId
+            """;
+
+        await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
+
+        var command = new CommandDefinition(sql, new { ShopId = shopId }, cancellationToken: cancellationToken);
+        await connection.ExecuteAsync(command);
+    }
+
+    public async Task DecrementVoteCount(Guid shopId, CancellationToken cancellationToken)
+    {
+        const string sql =
+            """
+            UPDATE shops
+            SET vote_count = GREATEST(vote_count - 1, 0),
+                updated_at = now()
+            WHERE id = @ShopId
+            """;
+
+        await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
+
+        var command = new CommandDefinition(sql, new { ShopId = shopId }, cancellationToken: cancellationToken);
+        await connection.ExecuteAsync(command);
+    }
 }

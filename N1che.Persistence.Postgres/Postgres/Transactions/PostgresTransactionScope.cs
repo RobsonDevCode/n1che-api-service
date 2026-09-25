@@ -14,6 +14,15 @@ public sealed class PostgresTransactionScope : ITransactionScope
         _context = context;
     }
 
+    public async Task ExecuteAsync(Func<CancellationToken, Task> operation, CancellationToken cancellationToken)
+    {
+        await ExecuteAsync(async token =>
+        {
+            await operation(token);
+            return true;
+        }, cancellationToken);
+    }
+
     public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> operation, CancellationToken cancellationToken)
     {
         if (_context.Transaction is not null)

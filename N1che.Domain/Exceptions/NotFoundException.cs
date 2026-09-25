@@ -6,6 +6,8 @@ public sealed class NotFoundException(string entityType, params object[] paramet
     private const string RouteFormat = "Route {0} not found";
     private const string ReviewFormat = "Review {0} not found";
     private const string NicheFormat = "Niche {0} not found";
+    private const string VoteFormat = "Vote for shop {0} not found";
+    private const string BookmarkFormat = "Bookmark for shop {0} not found";
     private const string DefaultMessage = "Data not found";
 
     private string Format { get; } = entityType switch
@@ -14,6 +16,8 @@ public sealed class NotFoundException(string entityType, params object[] paramet
         EntityTypes.Route => RouteFormat,
         EntityTypes.Review => ReviewFormat,
         EntityTypes.Niche => NicheFormat,
+        EntityTypes.Vote => VoteFormat,
+        EntityTypes.Bookmark => BookmarkFormat,
         _ => DefaultMessage
     };
 

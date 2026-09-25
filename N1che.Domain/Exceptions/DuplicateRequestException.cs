@@ -4,8 +4,8 @@ public sealed class DuplicateRequestException(string entityType, params object[]
 {
     private const string ShopFormat = "Shop {0} already exists in the database.";
     private const string RouteFormat = "Route {0} already exists in the database.";
-    private const string VoteFormat = "You have already voted on {0}.";
-    private const string BookmarkFormat = "{0} is already bookmarked.";
+    private const string VoteFormat = "Vote for shop {0} already exists.";
+    private const string BookmarkFormat = "Bookmark for shop {0} already exists.";
     private const string DefaultMessage = "An item with the same key has already been added.";
 
     private string Format { get; } = entityType switch

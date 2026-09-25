@@ -10,6 +10,25 @@ internal static class ShopPersistenceProvider
         Environment.GetEnvironmentVariable("Postgres__ConnectionString")
         ?? throw new InvalidOperationException("Postgres__ConnectionString is not set");
 
+    // Dapper leaves an unselected member at its default, so every shop read shares one projection
+    // rather than risking a new column reaching one query and not the other.
+    private const string ShopProjection =
+        """
+        SELECT id,
+               google_place_id,
+               name,
+               niches,
+               address,
+               ST_Y(location::geometry) AS latitude,
+               ST_X(location::geometry) AS longitude,
+               vote_count,
+               place_status,
+               created_at,
+               added_by_user_id,
+               added_by_username
+        FROM shops
+        """;
+
     internal static async Task Insert(IEnumerable<ShopEntity> shops)
     {
         await using var connection = new NpgsqlConnection(ConnectionString);
@@ -68,23 +87,18 @@ internal static class ShopPersistenceProvider
         await connection.OpenAsync();
 
         return await connection.QuerySingleAsync<ShopEntity>(
-            """
-            SELECT id,
-                   google_place_id,
-                   name,
-                   niches,
-                   address,
-                   ST_Y(location::geometry) AS latitude,
-                   ST_X(location::geometry) AS longitude,
-                   vote_count,
-                   place_status,
-                   created_at,
-                   added_by_user_id,
-                   added_by_username
-            FROM shops
-            WHERE google_place_id = @googlePlaceId
-            """,
+            $"{ShopProjection} WHERE google_place_id = @googlePlaceId",
             new { googlePlaceId });
+    }
+
+    internal static async Task<ShopEntity> GetById(Guid id)
+    {
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        return await connection.QuerySingleAsync<ShopEntity>(
+            $"{ShopProjection} WHERE id = @id",
+            new { id });
     }
 
     internal static async Task<int> CountByGooglePlaceId(string googlePlaceId)

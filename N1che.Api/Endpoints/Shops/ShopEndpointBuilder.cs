@@ -8,6 +8,8 @@ internal static class ShopEndpointBuilder
             .AddGetShopsEndpoints()
             .AddGetShopInteractionsEndpoints()
             .AddCreateShopEndpoints()
+            .AddShopVoteEndpoints()
+            .AddShopBookmarkEndpoints()
             .RequireAuthorization()
             .WithTags("shops");
 

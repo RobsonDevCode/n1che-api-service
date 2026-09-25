@@ -30,11 +30,6 @@ internal static class ShopsClient
         return await client.GetAsync($"shops/{id}");
     }
 
-    public static async Task<HttpResponseMessage> GetShopInteractions(this HttpClient client, Guid id)
-    {
-        return await client.GetAsync($"shops/{id}/interactions");
-    }
-
     public static async Task<HttpResponseMessage> GetShopsPage(this HttpClient client, ShopsFilter filter, PaginationFilter pagination)
     {
         var builder = new QueryBuilder();

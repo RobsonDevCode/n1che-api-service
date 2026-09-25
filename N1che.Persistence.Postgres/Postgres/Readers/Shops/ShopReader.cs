@@ -148,6 +148,16 @@ public sealed class ShopReader : IShopsReader
         return entity?.ToDomainModel();
     }
 
+    public async Task<bool> Exists(Guid id, CancellationToken cancellationToken)
+    {
+        const string sql = "SELECT EXISTS (SELECT 1 FROM shops WHERE id = @Id)";
+
+        await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
+
+        var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: cancellationToken);
+        return await connection.ExecuteScalarAsync<bool>(command);
+    }
+
     public async Task<long> GetCount(ShopsFilterModel filterModel, CancellationToken cancellationToken)
     {
         const string sql =
