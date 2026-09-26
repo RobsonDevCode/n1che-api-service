@@ -1,8 +1,8 @@
 namespace N1che.Contracts.Response.Routes;
 
 /// <summary>
-/// A computed route: nothing is saved, so it carries no id, author or vote count, and the caller keeps
-/// the name and tag it asked with.
+/// A walk through a set of stops: the stops in the order they are walked, the line through them, and
+/// what the walk costs.
 /// </summary>
 public record RouteShapeResponse
 {
@@ -14,6 +14,6 @@ public record RouteShapeResponse
 
     public required int TotalMinutes { get; init; }
 
-    /// <summary><c>you</c> or <c>loop</c>, as the route was asked for.</summary>
+    /// <summary><c>you</c> or <c>loop</c>.</summary>
     public required string Mode { get; init; }
 }

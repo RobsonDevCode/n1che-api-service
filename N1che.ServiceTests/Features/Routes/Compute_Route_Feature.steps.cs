@@ -38,21 +38,18 @@ public partial class Compute_Route_Feature : FeatureFixture
 
     private const string ModeValidationMessage = "Mode must be 'you' or 'loop'.";
     private const string StopRequiredValidationMessage = "At least one stop is required.";
-    private const string TooManyStopsValidationMessage = "A route can hold at most 5 stops.";
+    private const string TooManyStopsValidationMessage = "A route can hold at most 15 stops.";
     private const string RepeatedStopValidationMessage = "A stop can only appear once in a route.";
     private const string LoopStopsValidationMessage = "A loop needs at least two stops.";
     private const string OriginlessStopsValidationMessage = "A route without an origin needs at least two stops.";
     private const string LatitudeValidationMessage = "Latitude must be between -90 and 90.";
     private const string LongitudeValidationMessage = "Longitude must be between -180 and 180.";
 
-    // One past the five stops a route can hold.
-    private const int TooManyStops = 6;
+    private const int TooManyStops = 16;
 
     private const double OutOfRangeLatitude = 200;
     private const double OutOfRangeLongitude = 200;
 
-    // The app allows a quarter of an hour in each shop on top of the walk.
-    private const int BrowseMinutesPerStop = 15;
     private const double SecondsPerMinute = 60;
 
     // Offsets in degrees of latitude from this scenario's origin — each stop roughly 111m past the last.
@@ -290,8 +287,7 @@ public partial class Compute_Route_Feature : FeatureFixture
             }).ToArray(),
             Polyline = _googleRoute.Polyline,
             DistanceMeters = _googleRoute.DistanceMeters,
-            TotalMinutes = (int)Math.Round(_googleRoute.DurationSeconds / SecondsPerMinute)
-                           + _stops.Length * BrowseMinutesPerStop,
+            TotalMinutes = (int)Math.Round(_googleRoute.DurationSeconds / SecondsPerMinute),
             Mode = isLoop ? LoopMode : YouMode,
         }, options => options
             .WithStrictOrdering()

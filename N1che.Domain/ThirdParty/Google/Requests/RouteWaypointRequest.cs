@@ -1,6 +1,6 @@
 namespace N1che.Domain.ThirdParty.Google.Requests;
 
-/// <summary>One point of a route: where it is, wrapped as Google nests a waypoint's location.</summary>
+/// <summary>One point of a route.</summary>
 public sealed record RouteWaypointRequest
 {
     public required RouteWaypointLocationRequest Location { get; init; }

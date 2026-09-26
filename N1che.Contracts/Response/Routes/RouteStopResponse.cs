@@ -14,6 +14,6 @@ public record RouteStopResponse
 
     public required string PlaceStatus { get; init; }
 
-    /// <summary>The walk that arrives here, present only on a computed route.</summary>
+    /// <summary>The walk that arrives here, absent on a saved route.</summary>
     public RouteLegResponse? Leg { get; init; }
 }

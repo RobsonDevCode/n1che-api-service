@@ -1,6 +1,6 @@
 namespace N1che.Domain.Models.Routes;
 
-/// <summary>One turn-by-turn step of a leg, as the navigation engine drives off it.</summary>
+/// <summary>One turn-by-turn step of a leg.</summary>
 public record RouteStepModel
 {
     public required RouteWalkModel Walk { get; init; }

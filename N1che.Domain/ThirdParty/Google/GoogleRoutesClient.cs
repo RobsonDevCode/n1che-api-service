@@ -14,8 +14,7 @@ public sealed class GoogleRoutesClient : IGoogleRoutesClient
 
     private const string ComputeRoutesPath = "directions/v2:computeRoutes";
 
-    // Google bills per field group, so the mask asks for exactly what the panels and the nav engine
-    // render: the route's geometry, each leg's totals, and the turn-by-turn steps inside them.
+    // Google bills per field group, so the mask asks for exactly what the app renders.
     private static readonly string ComputeRoutesFieldMask = string.Join(',',
     [
         "routes.distanceMeters",
@@ -50,8 +49,8 @@ public sealed class GoogleRoutesClient : IGoogleRoutesClient
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
-        // The stops were read from our own store and the waypoints built from them, so nothing the
-        // caller sent is left for Google to reject — a failure here is Google's.
+        // The waypoints were built from stops read out of the store, so a failure here is Google's
+        // rather than anything the caller sent.
         if (!response.IsSuccessStatusCode)
         {
             var error = await response.Content.ReadAsStringAsync(cancellationToken);

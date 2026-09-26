@@ -8,14 +8,10 @@ public static class ComputeRoutesResponseExtensions
 {
     private const string UnknownManeuver = "unknown";
 
-    // Google carries a duration as protobuf seconds, e.g. "620s", and a fractional one separates on a
-    // point whatever the host's culture does.
+    // Google carries a duration as protobuf seconds, e.g. "620s".
     private const char SecondsSuffix = 's';
 
-    /// <summary>
-    /// Reads the computed walk, or <c>null</c> when Google routed nothing. Alternatives are switched
-    /// off, so the first route is the only one.
-    /// </summary>
+    /// <summary>Reads the computed walk, or <c>null</c> when Google routed nothing.</summary>
     public static RouteGeometryModel? ToDomainModel(this ComputeRoutesResponse response)
     {
         var route = response.Routes?.FirstOrDefault();

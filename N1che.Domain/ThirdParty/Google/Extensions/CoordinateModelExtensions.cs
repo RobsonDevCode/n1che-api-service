@@ -7,8 +7,7 @@ public static class CoordinateModelExtensions
 {
     private const string WalkingMode = "WALK";
 
-    // GeoJSON hands back coordinates we can read straight off, where Google's own encoding would have
-    // to be decoded first.
+    // GeoJSON needs no decoding, where Google's own polyline encoding would.
     private const string GeoJsonPolyline = "GEO_JSON_LINESTRING";
 
     // The app walks one route and draws one line, so alternatives would be billed for and dropped.
@@ -18,9 +17,8 @@ public static class CoordinateModelExtensions
     private const string Units = "METRIC";
 
     /// <summary>
-    /// Builds the request for a walk through the waypoints in the order given. The caller has ordered
-    /// them, so the first and last are the ends of the walk and everything between is an intermediate,
-    /// which Google visits in sequence rather than optimising.
+    /// Builds the request for a walk through the waypoints in the order given: the first and last are
+    /// the ends of the walk, everything between an intermediate.
     /// </summary>
     public static ComputeRoutesRequest ToGoogleRequest(this IReadOnlyCollection<CoordinateModel> waypoints) => new()
     {

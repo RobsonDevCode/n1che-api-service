@@ -16,9 +16,6 @@ public record RouteStopModel
 
     public required int Position { get; init; }
 
-    /// <summary>
-    /// The walk that arrives at this stop. Only a route computed against Google carries legs; a saved
-    /// route read back from the store leaves them absent.
-    /// </summary>
+    /// <summary>The walk that arrives at this stop, absent on a route read back from the store.</summary>
     public RouteLegModel? Leg { get; init; }
 }

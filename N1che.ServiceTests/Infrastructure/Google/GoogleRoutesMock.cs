@@ -44,8 +44,7 @@ internal static class GoogleRoutesMock
 
     internal static void Stop() => s_server?.Stop();
 
-    // A duration is protobuf seconds and a GeoJSON coordinate is longitude first, both as Google sends
-    // them rather than as we hold them.
+    // A duration is protobuf seconds and a GeoJSON coordinate is longitude first, as Google sends them.
     internal static void ReturnsRoute(IReadOnlyCollection<CoordinateResponse> waypoints, GoogleRoute route)
     {
         Server

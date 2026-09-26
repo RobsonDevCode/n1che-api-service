@@ -6,14 +6,12 @@ namespace N1che.Api.Validation.Routes;
 
 internal sealed class ComputeRouteRequestValidator : AbstractValidator<ComputeRouteRequest>
 {
-    // The route builder caps a route at five stops, and a walk needs two points to run between.
-    private const int MaxStops = 5;
+    private const int MaxStops = 15;
     private const int MinWaypoints = 2;
 
     public ComputeRouteRequestValidator()
     {
-        // A required property is only required to be present, so a null list still binds: nothing past
-        // the rule that catches it may run and count it.
+        // A required property binds as null, so nothing past the rule that catches it may count it.
         ClassLevelCascadeMode = CascadeMode.Stop;
         RuleLevelCascadeMode = CascadeMode.Stop;
 

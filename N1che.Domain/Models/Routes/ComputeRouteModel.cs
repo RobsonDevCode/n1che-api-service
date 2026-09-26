@@ -1,6 +1,6 @@
 namespace N1che.Domain.Models.Routes;
 
-/// <summary>A route to compute the walk for, built by the caller and never saved.</summary>
+/// <summary>A route to compute the walk for.</summary>
 public record ComputeRouteModel
 {
     /// <summary>The shops to walk through, in the order they are walked.</summary>

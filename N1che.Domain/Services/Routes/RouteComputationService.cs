@@ -9,9 +9,6 @@ namespace N1che.Domain.Services.Routes;
 
 public sealed class RouteComputationService : IRouteComputationService
 {
-    // The device allows the same, so a computed route and a saved one agree on a route's time.
-    private const int BrowseMinutesPerStop = 15;
-
     private const double SecondsPerMinute = 60;
 
     private readonly IShopsReader _shopsReader;
@@ -34,7 +31,11 @@ public sealed class RouteComputationService : IRouteComputationService
         var shopsById = shops.ToDictionary(shop => shop.Id);
 
         // A read answers in whatever order the rows come back, so the stops follow the ids.
-        var stops = route.StopIds.Select((stopId, position) =>
+        var stops = new RouteStopModel[route.StopIds.Count];
+        var stopCoordinates = new CoordinateModel[route.StopIds.Count];
+        var position = 0;
+
+        foreach (var stopId in route.StopIds)
         {
             if (!shopsById.TryGetValue(stopId.ToString(), out var shop))
             {
@@ -43,7 +44,7 @@ public sealed class RouteComputationService : IRouteComputationService
                 throw new NotFoundException(EntityTypes.Shop, stopId);
             }
 
-            return new RouteStopModel
+            stops[position] = new RouteStopModel
             {
                 Id = shop.Id,
                 Name = shop.Name,
@@ -53,16 +54,20 @@ public sealed class RouteComputationService : IRouteComputationService
                 PlaceStatus = shop.PlaceStatus,
                 Position = position,
             };
-        }).ToArray();
 
-        var stopCoordinates = stops
-            .Select(stop => new CoordinateModel { Latitude = stop.Latitude, Longitude = stop.Longitude })
-            .ToArray();
+            stopCoordinates[position] = new CoordinateModel
+            {
+                Latitude = shop.Latitude,
+                Longitude = shop.Longitude,
+            };
+
+            position++;
+        }
 
         IReadOnlyCollection<CoordinateModel> waypoints = route.Mode switch
         {
             RouteModes.Loop => [..stopCoordinates, stopCoordinates[0]],
-            _ when route.Origin is not null => [route.Origin, ..stopCoordinates],
+            RouteModes.You when route.Origin is not null => [route.Origin, ..stopCoordinates],
             _ => stopCoordinates
         };
 
@@ -96,10 +101,10 @@ public sealed class RouteComputationService : IRouteComputationService
 
         return new RouteShapeModel
         {
-            Stops = stops.Select((stop, position) => stop with { Leg = arrivingLegs[position] }).ToArray(),
+            Stops = stops.Select((stop, p) => stop with { Leg = arrivingLegs[p] }).ToArray(),
             Polyline = geometry.Walk.Polyline,
             DistanceMeters = geometry.Walk.DistanceMeters,
-            TotalMinutes = walkingMinutes + stops.Length * BrowseMinutesPerStop,
+            TotalMinutes = walkingMinutes,
             Mode = route.Mode,
         };
     }

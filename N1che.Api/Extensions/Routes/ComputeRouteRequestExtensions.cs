@@ -8,13 +8,13 @@ public static class ComputeRouteRequestExtensions
     public static ComputeRouteModel ToDomainModel(this ComputeRouteRequest request) => new()
     {
         StopIds = request.Stops.ToArray(),
-        Origin = request.Origin is null
-            ? null
-            : new CoordinateModel
-            {
-                Latitude = request.Origin.Latitude,
-                Longitude = request.Origin.Longitude,
-            },
+        Origin = request.Origin?.ToDomainModel(),
         Mode = request.Mode,
+    };
+
+    private static CoordinateModel ToDomainModel(this CoordinateRequest coordinate) => new()
+    {
+        Latitude = coordinate.Latitude,
+        Longitude = coordinate.Longitude,
     };
 }

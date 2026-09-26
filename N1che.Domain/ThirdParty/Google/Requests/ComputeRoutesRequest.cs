@@ -1,8 +1,8 @@
 namespace N1che.Domain.ThirdParty.Google.Requests;
 
 /// <summary>
-/// A walking route through an ordered set of waypoints. The stops between the ends are
-/// <c>intermediates</c>, which Google visits in the order they are given rather than optimising.
+/// A walking route through an ordered set of waypoints, where the points between the ends are
+/// <c>intermediates</c>.
 /// </summary>
 public sealed record ComputeRoutesRequest
 {
