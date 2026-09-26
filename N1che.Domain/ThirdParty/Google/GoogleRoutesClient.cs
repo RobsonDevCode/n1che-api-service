@@ -41,10 +41,8 @@ public sealed class GoogleRoutesClient : IGoogleRoutesClient
     public async Task<RouteGeometryModel?> ComputeWalkingRoute(
         IReadOnlyCollection<CoordinateModel> waypoints, CancellationToken cancellationToken)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, ComputeRoutesPath)
-        {
-            Content = JsonContent.Create(waypoints.ToGoogleRequest())
-        };
+        using var request = new HttpRequestMessage(HttpMethod.Post, ComputeRoutesPath);
+        request.Content = JsonContent.Create(waypoints.ToGoogleRequest());
         request.Headers.Add(FieldMaskHeader, ComputeRoutesFieldMask);
 
         using var response = await _httpClient.SendAsync(request, cancellationToken);
