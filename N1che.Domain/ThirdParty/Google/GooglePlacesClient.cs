@@ -62,7 +62,7 @@ public sealed class GooglePlacesClient : IGooglePlacesClient
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, "v1/places:searchText")
         {
-            Content = JsonContent.Create(filter.ToSearchRequest())
+            Content = JsonContent.Create(filter.ToGoogleRequest())
         };
         request.Headers.Add(FieldMaskHeader, PlaceSearchFieldMask);
 

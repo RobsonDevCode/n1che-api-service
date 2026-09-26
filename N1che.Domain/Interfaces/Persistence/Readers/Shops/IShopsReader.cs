@@ -15,6 +15,9 @@ public interface IShopsReader
     /// <summary>Gets a single shop by its identifier, or <c>null</c> when no shop has that id.</summary>
     Task<ShopModel?> GetById(Guid id, CancellationToken cancellationToken);
 
+    /// <summary>Gets the shops with those identifiers, in no particular order.</summary>
+    Task<IReadOnlyCollection<ShopModel>> GetByIds(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken);
+
     /// <summary>Gets whether a shop has that id, without reading the row.</summary>
     Task<bool> Exists(Guid id, CancellationToken cancellationToken);
 }

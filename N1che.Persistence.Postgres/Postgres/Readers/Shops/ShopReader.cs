@@ -148,6 +148,40 @@ public sealed class ShopReader : IShopsReader
         return entity?.ToDomainModel();
     }
 
+    public async Task<IReadOnlyCollection<ShopModel>> GetByIds(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken)
+    {
+        const string sql =
+            """
+            SELECT shops.id,
+                   shops.google_place_id,
+                   shops.name,
+                   shops.niches,
+                   shops.address,
+                   ST_Y(shops.location::geometry) AS latitude,
+                   ST_X(shops.location::geometry) AS longitude,
+                   shops.vote_count,
+                   shops.place_status,
+                   shop_hours.open_time,
+                   shop_hours.close_time,
+                   shops.created_at,
+                   shops.added_by_user_id,
+                   shops.added_by_username
+            FROM shops
+            LEFT JOIN shop_hours ON shop_hours.shop_id = shops.id
+                                AND shop_hours.day_of_week = @DayOfWeek
+            WHERE shops.id = ANY(@Ids)
+            """;
+
+        await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
+
+        var parameters = new { Ids = ids.ToArray(), DayOfWeek = CurrentDayOfWeek };
+
+        var command = new CommandDefinition(sql, parameters, cancellationToken: cancellationToken);
+        var entities = await connection.QueryAsync<ShopCompositeEntity>(command);
+
+        return entities.Select(entity => entity.ToDomainModel()).ToArray();
+    }
+
     public async Task<bool> Exists(Guid id, CancellationToken cancellationToken)
     {
         const string sql = "SELECT EXISTS (SELECT 1 FROM shops WHERE id = @Id)";

@@ -12,6 +12,7 @@ using N1che.Contracts.Filters.Pagination;
 using N1che.Contracts.Filters.Places;
 using N1che.Contracts.Filters.Routes;
 using N1che.Contracts.Filters.Shops;
+using N1che.Contracts.Requests.Routes;
 using N1che.Contracts.Requests.Shops;
 using N1che.Domain.Interfaces;
 using N1che.Domain.Interfaces.Persistence.Readers.Niches;
@@ -77,6 +78,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IShopVotingService, ShopVotingService>();
         services.AddScoped<IShopBookmarkingService, ShopBookmarkingService>();
         services.AddScoped<IRouteRetrievalService, RouteRetrievalService>();
+        services.AddScoped<IRouteComputationService, RouteComputationService>();
         services.AddScoped<IPlaceRetrievalService, PlaceRetrievalService>();
 
         return services;
@@ -121,6 +123,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IValidator<NearbyShopsFilter>, NearbyShopsFilterValidator>();
         services.AddSingleton<IValidator<ShopsFilter>, ShopsFilterValidator>();
         services.AddSingleton<IValidator<RoutesFilter>, RoutesFilterValidator>();
+        services.AddSingleton<IValidator<ComputeRouteRequest>, ComputeRouteRequestValidator>();
         services.AddSingleton<IValidator<PlacesSearchFilter>, PlacesSearchFilterValidator>();
         services.AddSingleton<IValidator<PaginationFilter>, PaginationFilterValidator>();
 

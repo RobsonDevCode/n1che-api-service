@@ -4,12 +4,14 @@ public sealed class InvalidRequestException(string entityType, params object[] p
 {
     private const string NicheFormat = "Niche {0} is not recognised.";
     private const string PlaceFormat = "Google place {0} cannot be added.";
+    private const string RouteFormat = "No walking route runs through the requested stops.";
     private const string DefaultMessage = "The request could not be processed.";
 
     private string Format { get; } = entityType switch
     {
         EntityTypes.Niche => NicheFormat,
         EntityTypes.Place => PlaceFormat,
+        EntityTypes.Route => RouteFormat,
         _ => DefaultMessage
     };
 
