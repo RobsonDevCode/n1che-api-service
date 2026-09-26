@@ -124,7 +124,7 @@ public partial class Get_Nearby_Shops_Feature : FeatureFixture
 
         return new ShopResponse
         {
-            Id = shop.Id.ToString(),
+            Id = shop.Id,
             GooglePlaceId = shop.GooglePlaceId,
             Name = shop.Name,
             Niches = shop.Niches,

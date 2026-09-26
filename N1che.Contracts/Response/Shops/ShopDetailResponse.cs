@@ -8,7 +8,7 @@ namespace N1che.Contracts.Response.Shops;
 public record ShopDetailResponse
 {
     /// <summary>Internal identifier for the shop.</summary>
-    public required string Id { get; init; }
+    public required Guid Id { get; init; }
 
     /// <summary>Google Places identifier the shop was added from.</summary>
     public required string GooglePlaceId { get; init; }

@@ -37,7 +37,7 @@ public sealed class RouteComputationService : IRouteComputationService
 
         foreach (var stopId in route.StopIds)
         {
-            if (!shopsById.TryGetValue(stopId.ToString(), out var shop))
+            if (!shopsById.TryGetValue(stopId, out var shop))
             {
                 _logger.LogWarning("Route stop {ShopId} names no shop", stopId);
 

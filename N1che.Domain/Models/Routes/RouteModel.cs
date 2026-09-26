@@ -2,7 +2,7 @@ namespace N1che.Domain.Models.Routes;
 
 public record RouteModel
 {
-    public required string Id { get; init; }
+    public required Guid Id { get; init; }
 
     public required string Name { get; init; }
 
