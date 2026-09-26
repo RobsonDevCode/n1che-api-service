@@ -9,7 +9,7 @@ public static class PlacesSearchFilterModelExtensions
     // pages, so asking for fewer would cost the same and only hide matches the caller never learns of.
     private const int SearchPageSize = 20;
 
-    public static PlaceSearchRequest ToSearchRequest(this PlacesSearchFilterModel filter) => new()
+    public static PlaceSearchRequest ToGoogleRequest(this PlacesSearchFilterModel filter) => new()
     {
         TextQuery = filter.Query,
         PageSize = SearchPageSize,
@@ -17,12 +17,12 @@ public static class PlacesSearchFilterModelExtensions
         {
             Rectangle = new PlaceRectangleRequest
             {
-                Low = new PlaceLocationRequest
+                Low = new PointRequest
                 {
                     Latitude = filter.SouthWestLatitude,
                     Longitude = filter.SouthWestLongitude,
                 },
-                High = new PlaceLocationRequest
+                High = new PointRequest
                 {
                     Latitude = filter.NorthEastLatitude,
                     Longitude = filter.NorthEastLongitude,

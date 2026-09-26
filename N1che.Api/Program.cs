@@ -18,6 +18,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddPostgres(builder.Configuration);
 builder.Services.AddDomainDependencies();
 builder.Services.AddGooglePlacesClient(builder.Configuration);
+builder.Services.AddGoogleRoutesClient(builder.Configuration);
 builder.Services.AddCognitoAuthentication(builder.Configuration);
 builder.Services.AddValidationDependencies();
 builder.Services.AddN1cheHealthChecks();

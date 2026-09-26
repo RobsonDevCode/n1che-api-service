@@ -29,6 +29,9 @@ internal class ConfigureLightBddScopeAttribute : LightBddScopeAttribute
         Environment.SetEnvironmentVariable("GooglePlaces__BaseUrl", GooglePlacesMock.Start());
         Environment.SetEnvironmentVariable("GooglePlaces__ApiKey", GooglePlacesMock.ApiKey);
 
+        Environment.SetEnvironmentVariable("GoogleRoutes__BaseUrl", GoogleRoutesMock.Start());
+        Environment.SetEnvironmentVariable("GoogleRoutes__ApiKey", GoogleRoutesMock.ApiKey);
+
         TestWebApplicationFactory.Initialize(_ => { });
     }
 
@@ -36,6 +39,7 @@ internal class ConfigureLightBddScopeAttribute : LightBddScopeAttribute
     {
         TestWebApplicationFactory.Dispose(_ => { });
         GooglePlacesMock.Stop();
+        GoogleRoutesMock.Stop();
         _postgresContainer?.DisposeAsync().GetAwaiter().GetResult();
     }
 }

@@ -13,4 +13,7 @@ public record RouteStopResponse
     public required double Longitude { get; init; }
 
     public required string PlaceStatus { get; init; }
+
+    /// <summary>The walk that arrives here, present only on a computed route.</summary>
+    public RouteLegResponse? Leg { get; init; }
 }
