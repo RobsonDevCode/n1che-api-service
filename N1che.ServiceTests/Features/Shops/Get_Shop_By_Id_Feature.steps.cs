@@ -87,7 +87,7 @@ public partial class Get_Shop_By_Id_Feature : FeatureFixture
 
         shop.Should().BeEquivalentTo(new ShopDetailResponse
         {
-            Id = _shop.Id.ToString(),
+            Id = _shop.Id,
             GooglePlaceId = _shop.GooglePlaceId,
             Name = _shop.Name,
             Niches = _shop.Niches,

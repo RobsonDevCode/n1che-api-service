@@ -7,7 +7,7 @@ public static class RouteStopCompositeEntityExtensions
 {
     public static RouteStopModel ToDomainModel(this RouteStopCompositeEntity entity) => new()
     {
-        Id = entity.Id.ToString(),
+        Id = entity.Id,
         Name = entity.Name,
         Address = entity.Address,
         Latitude = entity.Latitude,

@@ -262,7 +262,7 @@ public partial class Compute_Route_Feature : FeatureFixture
         {
             Stops = _stops.Select((stop, position) => new RouteStopResponse
             {
-                Id = stop.Id.ToString(),
+                Id = stop.Id,
                 Name = stop.Name,
                 Address = stop.Address,
                 Latitude = stop.Latitude,

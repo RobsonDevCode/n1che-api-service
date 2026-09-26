@@ -7,7 +7,7 @@ public static class ShopEntityExtensions
 {
     public static ShopModel ToDomainModel(this ShopEntity entity) => new()
     {
-        Id = entity.Id.ToString(),
+        Id = entity.Id,
         GooglePlaceId = entity.GooglePlaceId,
         Name = entity.Name,
         Niches = entity.Niches,

@@ -98,7 +98,7 @@ public partial class Get_Paged_Shops_Feature : FeatureFixture
         result.PaginationDetails.TotalCount.Should().BeGreaterThanOrEqualTo(_shops.Count);
 
         // Filter to this scenario's own rows so shared-table rows from other scenarios never interfere.
-        var seededIds = _shops.Select(shop => shop.Id.ToString()).ToHashSet();
+        var seededIds = _shops.Select(shop => shop.Id).ToHashSet();
         var returned = result.Data.Where(shop => seededIds.Contains(shop.Id)).ToArray();
 
         returned.Should().BeEquivalentTo(expected, options => options
@@ -129,7 +129,7 @@ public partial class Get_Paged_Shops_Feature : FeatureFixture
 
         return new ShopResponse
         {
-            Id = shop.Id.ToString(),
+            Id = shop.Id,
             GooglePlaceId = shop.GooglePlaceId,
             Name = shop.Name,
             Niches = shop.Niches,

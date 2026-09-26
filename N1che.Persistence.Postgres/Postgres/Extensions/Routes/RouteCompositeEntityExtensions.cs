@@ -12,7 +12,7 @@ public static class RouteCompositeEntityExtensions
 
     public static RouteModel ToDomainModel(this RouteCompositeEntity entity) => new()
     {
-        Id = entity.Id.ToString(),
+        Id = entity.Id,
         Name = entity.Name,
         Tag = entity.Tag,
         Mode = entity.Mode,

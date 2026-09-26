@@ -148,7 +148,7 @@ public partial class Get_Routes_Feature : FeatureFixture
 
     private static RouteResponse Expected((RouteEntity Route, ShopEntity[] Stops) seed) => new()
     {
-        Id = seed.Route.Id.ToString(),
+        Id = seed.Route.Id,
         Name = seed.Route.Name,
         Tag = seed.Route.Tag,
         Mode = seed.Route.Mode,
@@ -157,7 +157,7 @@ public partial class Get_Routes_Feature : FeatureFixture
         UserId = seed.Route.CreatedByUserId,
         Stops = seed.Stops.Select(stop => new RouteStopResponse
         {
-            Id = stop.Id.ToString(),
+            Id = stop.Id,
             Name = stop.Name,
             Address = stop.Address,
             Latitude = stop.Latitude,

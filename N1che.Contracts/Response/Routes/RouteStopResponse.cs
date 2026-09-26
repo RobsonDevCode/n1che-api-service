@@ -2,7 +2,7 @@ namespace N1che.Contracts.Response.Routes;
 
 public record RouteStopResponse
 {
-    public required string Id { get; init; }
+    public required Guid Id { get; init; }
 
     public required string Name { get; init; }
 

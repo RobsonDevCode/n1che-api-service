@@ -2,7 +2,7 @@ namespace N1che.Domain.Models.Shops;
 
 public record ShopModel
 {
-    public required string Id { get; init; }
+    public required Guid Id { get; init; }
 
     public required string GooglePlaceId { get; init; }
 

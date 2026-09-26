@@ -67,7 +67,7 @@ public sealed class ShopCreationService : IShopCreationService
         var shop = await _transactionScope.ExecuteAsync(async token =>
         {
             var created = await _shopsWriter.Create(newShop, token);
-            await _shopHoursWriter.Create(Guid.Parse(created.Id), place.OpeningHours, token);
+            await _shopHoursWriter.Create(created.Id, place.OpeningHours, token);
 
             return created;
         }, cancellationToken);

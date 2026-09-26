@@ -159,7 +159,7 @@ public partial class Add_Shop_Feature : FeatureFixture
 
         shop.Should().BeEquivalentTo(new ShopDetailResponse
         {
-            Id = stored.Id.ToString(),
+            Id = stored.Id,
             GooglePlaceId = _googlePlaceId,
             Name = _place.Name,
             Niches = _request.Niches,
