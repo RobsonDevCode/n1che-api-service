@@ -7,8 +7,6 @@ namespace N1che.ServiceTests.Infrastructure.Persistence;
 
 internal static class RouteEntityBuilder
 {
-    private const string DefaultMode = "you";
-
     // Each field falls back to a fixture-generated value when the caller does not supply one,
     // so a scenario only has to set the fields it actually asserts on.
     public static RouteEntity Build(
@@ -16,12 +14,10 @@ internal static class RouteEntityBuilder
         IReadOnlyList<ShopEntity> stops,
         string niche,
         int? voteCount = null,
-        DateTime? createdAt = null,
-        string mode = DefaultMode)
+        DateTime? createdAt = null)
     {
         var builder = fixture.Build<RouteEntity>()
             .With(route => route.Niche, niche)
-            .With(route => route.Mode, mode)
             .With(route => route.CreatedAt, createdAt ?? DateTime.UtcNow)
             .With(route => route.AnchorLatitude, stops.Average(stop => stop.Latitude))
             .With(route => route.AnchorLongitude, stops.Average(stop => stop.Longitude))

@@ -13,7 +13,6 @@ public static class RouteResponseExtensions
         Id = route.Id,
         Name = route.Name,
         Tag = route.Tag,
-        Mode = route.Mode,
         Niche = route.Niche,
         CreatedBy = route.CreatedByUsername,
         UserId = route.CreatedByUserId,
@@ -22,6 +21,12 @@ public static class RouteResponseExtensions
         DistanceMeters = route.DistanceMeters,
         TotalMinutes = route.TotalMinutes,
         TotalUpvotes = route.VoteCount,
+        CreatedAt = route.CreatedAt,
+    };
+
+    public static CreatedRouteResponse ToResponse(this CreatedRouteModel route) => new()
+    {
+        Id = route.Id,
         CreatedAt = route.CreatedAt,
     };
 

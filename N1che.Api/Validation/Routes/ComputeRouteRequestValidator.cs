@@ -6,9 +6,6 @@ namespace N1che.Api.Validation.Routes;
 
 internal sealed class ComputeRouteRequestValidator : AbstractValidator<ComputeRouteRequest>
 {
-    private const int MaxStops = 15;
-    private const int MinWaypoints = 2;
-
     public ComputeRouteRequestValidator()
     {
         // A required property binds as null, so nothing past the rule that catches it may count it.
@@ -21,19 +18,19 @@ internal sealed class ComputeRouteRequestValidator : AbstractValidator<ComputeRo
 
         RuleFor(request => request.Stops)
             .NotEmpty().WithMessage("At least one stop is required.")
-            .Must(stops => stops.Count <= MaxStops)
-            .WithMessage($"A route can hold at most {MaxStops} stops.")
+            .Must(stops => stops.Count <= RouteStopRules.MaxStops)
+            .WithMessage(RouteStopRules.TooManyStops)
             .Must(stops => stops.Distinct().Count() == stops.Count)
-            .WithMessage("A stop can only appear once in a route.");
+            .WithMessage(RouteStopRules.RepeatedStop);
 
         RuleFor(request => request.Stops)
-            .Must(stops => stops.Count >= MinWaypoints)
-            .WithMessage("A loop needs at least two stops.")
+            .Must(stops => stops.Count >= RouteStopRules.MinStops)
+            .WithMessage($"A loop needs at least {RouteStopRules.MinStops} stops.")
             .When(request => request.Mode == RouteModes.Loop);
 
         RuleFor(request => request.Stops)
-            .Must(stops => stops.Count >= MinWaypoints)
-            .WithMessage("A route without an origin needs at least two stops.")
+            .Must(stops => stops.Count >= RouteStopRules.MinStops)
+            .WithMessage($"A route without an origin needs at least {RouteStopRules.MinStops} stops.")
             .When(request => request.Mode == RouteModes.You && request.Origin is null);
 
         RuleFor(request => request.Origin)

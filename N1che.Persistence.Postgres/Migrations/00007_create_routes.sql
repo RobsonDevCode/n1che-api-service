@@ -3,7 +3,6 @@ CREATE TABLE routes (
     id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     name                text NOT NULL,
     tag                 text NOT NULL,
-    mode                text NOT NULL,
     niche               text NOT NULL REFERENCES niches(id),
     created_by_user_id  text NOT NULL,
     created_by_username text NOT NULL,
