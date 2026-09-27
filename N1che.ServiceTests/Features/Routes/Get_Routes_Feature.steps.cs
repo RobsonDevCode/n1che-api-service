@@ -151,7 +151,6 @@ public partial class Get_Routes_Feature : FeatureFixture
         Id = seed.Route.Id,
         Name = seed.Route.Name,
         Tag = seed.Route.Tag,
-        Mode = seed.Route.Mode,
         Niche = seed.Route.Niche,
         CreatedBy = seed.Route.CreatedByUsername,
         UserId = seed.Route.CreatedByUserId,

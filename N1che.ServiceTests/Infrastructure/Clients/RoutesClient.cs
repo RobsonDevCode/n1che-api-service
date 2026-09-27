@@ -9,6 +9,9 @@ internal static class RoutesClient
     public static async Task<HttpResponseMessage> ComputeRoute(this HttpClient client, ComputeRouteRequest request) =>
         await client.PostAsJsonAsync("routes/compute", request);
 
+    public static async Task<HttpResponseMessage> CreateRoute(this HttpClient client, CreateRouteRequest request) =>
+        await client.PostAsJsonAsync("routes", request);
+
     public static async Task<HttpResponseMessage> GetRoutes(this HttpClient client, RoutesFilter filter)
     {
         var query = new QueryBuilder()

@@ -40,8 +40,8 @@ public partial class Compute_Route_Feature : FeatureFixture
     private const string StopRequiredValidationMessage = "At least one stop is required.";
     private const string TooManyStopsValidationMessage = "A route can hold at most 15 stops.";
     private const string RepeatedStopValidationMessage = "A stop can only appear once in a route.";
-    private const string LoopStopsValidationMessage = "A loop needs at least two stops.";
-    private const string OriginlessStopsValidationMessage = "A route without an origin needs at least two stops.";
+    private const string LoopStopsValidationMessage = "A loop needs at least 2 stops.";
+    private const string OriginlessStopsValidationMessage = "A route without an origin needs at least 2 stops.";
     private const string LatitudeValidationMessage = "Latitude must be between -90 and 90.";
     private const string LongitudeValidationMessage = "Longitude must be between -180 and 180.";
 

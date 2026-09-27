@@ -18,6 +18,7 @@ using N1che.Domain.Interfaces;
 using N1che.Domain.Interfaces.Persistence.Readers.Niches;
 using N1che.Domain.Interfaces.Persistence.Readers.Routes;
 using N1che.Domain.Interfaces.Persistence.Readers.Shops;
+using N1che.Domain.Interfaces.Persistence.Writers.Routes;
 using N1che.Domain.Interfaces.Persistence.Writers.Shops;
 using N1che.Domain.Interfaces.Services.Niches;
 using N1che.Domain.Interfaces.Services.Places;
@@ -34,6 +35,7 @@ using N1che.Persistence.Postgres.Postgres.Readers.Routes;
 using N1che.Persistence.Postgres.Postgres.Readers.Shops;
 using N1che.Persistence.Postgres.Postgres.Transactions;
 using N1che.Persistence.Postgres.Postgres.TypeHandlers;
+using N1che.Persistence.Postgres.Postgres.Writers.Routes;
 using N1che.Persistence.Postgres.Postgres.Writers.Shops;
 using Npgsql;
 
@@ -61,6 +63,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IShopsReader, ShopReader>();
         services.AddScoped<IShopInteractionsReader, ShopInteractionsReader>();
         services.AddScoped<IRoutesReader, RouteReader>();
+        services.AddScoped<IRoutesWriter, RouteWriter>();
+        services.AddScoped<IRouteStopsWriter, RouteStopsWriter>();
         services.AddScoped<IShopsWriter, ShopWriter>();
         services.AddScoped<IShopHoursWriter, ShopHoursWriter>();
         services.AddScoped<IShopVotesWriter, ShopVotesWriter>();
@@ -79,6 +83,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IShopBookmarkingService, ShopBookmarkingService>();
         services.AddScoped<IRouteRetrievalService, RouteRetrievalService>();
         services.AddScoped<IRouteComputationService, RouteComputationService>();
+        services.AddScoped<IRouteCreationService, RouteCreationService>();
         services.AddScoped<IPlaceRetrievalService, PlaceRetrievalService>();
 
         return services;
@@ -124,6 +129,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IValidator<ShopsFilter>, ShopsFilterValidator>();
         services.AddSingleton<IValidator<RoutesFilter>, RoutesFilterValidator>();
         services.AddSingleton<IValidator<ComputeRouteRequest>, ComputeRouteRequestValidator>();
+        services.AddSingleton<IValidator<CreateRouteRequest>, CreateRouteRequestValidator>();
         services.AddSingleton<IValidator<PlacesSearchFilter>, PlacesSearchFilterValidator>();
         services.AddSingleton<IValidator<PaginationFilter>, PaginationFilterValidator>();
 

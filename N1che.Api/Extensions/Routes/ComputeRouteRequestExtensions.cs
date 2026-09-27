@@ -11,10 +11,4 @@ public static class ComputeRouteRequestExtensions
         Origin = request.Origin?.ToDomainModel(),
         Mode = request.Mode,
     };
-
-    private static CoordinateModel ToDomainModel(this CoordinateRequest coordinate) => new()
-    {
-        Latitude = coordinate.Latitude,
-        Longitude = coordinate.Longitude,
-    };
 }

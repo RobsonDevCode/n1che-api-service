@@ -8,8 +8,6 @@ public record RouteModel
 
     public required string Tag { get; init; }
 
-    public required string Mode { get; init; }
-
     public required string Niche { get; init; }
 
     public required string CreatedByUserId { get; init; }

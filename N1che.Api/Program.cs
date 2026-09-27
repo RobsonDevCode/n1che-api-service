@@ -4,6 +4,7 @@ using N1che.Api.Endpoints;
 using N1che.Api.ExceptionHandling;
 using N1che.Api.Extensions;
 using N1che.Api.Extensions.ThirdPartyClients;
+using N1che.Api.OpenApi;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +14,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options => options.AddRouteExamples());
 builder.Services.AddMemoryCache();
 builder.Services.AddPostgres(builder.Configuration);
 builder.Services.AddDomainDependencies();
