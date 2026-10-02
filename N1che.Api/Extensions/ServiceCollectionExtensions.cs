@@ -128,6 +128,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IValidator<NearbyShopsFilter>, NearbyShopsFilterValidator>();
         services.AddSingleton<IValidator<ShopsFilter>, ShopsFilterValidator>();
         services.AddSingleton<IValidator<RoutesFilter>, RoutesFilterValidator>();
+        services.AddSingleton<IValidator<GetRouteFilter>, GetRouteFilterValidator>();
         services.AddSingleton<IValidator<ComputeRouteRequest>, ComputeRouteRequestValidator>();
         services.AddSingleton<IValidator<CreateRouteRequest>, CreateRouteRequestValidator>();
         services.AddSingleton<IValidator<PlacesSearchFilter>, PlacesSearchFilterValidator>();

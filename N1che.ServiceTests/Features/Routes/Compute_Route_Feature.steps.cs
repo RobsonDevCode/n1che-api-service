@@ -128,12 +128,6 @@ public partial class Compute_Route_Feature : FeatureFixture
         };
     }
 
-    // The walk Google reports. Every distance and duration is drawn fresh, so no number the response
-    // carries can be one the service invented rather than one Google sent.
-    private static double RandomMeters() => Random.Shared.Next(50, 2000) + Random.Shared.NextDouble();
-
-    private static int RandomSeconds() => Random.Shared.Next(30, 1800);
-
     private async Task Shops_Exist(int count)
     {
         _stops = StopOffsets.Take(count)
@@ -148,79 +142,25 @@ public partial class Compute_Route_Feature : FeatureFixture
 
     private Task Google_Returns_A_Walk_Through(params CoordinateResponse[] waypoints)
     {
-        _googleRoute = new GoogleRoute
-        {
-            DistanceMeters = RandomMeters(),
-            DurationSeconds = RandomSeconds(),
-            Polyline = waypoints,
-            Legs = waypoints.SkipLast(1).Select((waypoint, index) => new GoogleLeg
-            {
-                DistanceMeters = RandomMeters(),
-                DurationSeconds = RandomSeconds(),
-                Polyline = [waypoint, waypoints[index + 1]],
-                Steps =
-                [
-                    new GoogleStep
-                    {
-                        DistanceMeters = RandomMeters(),
-                        DurationSeconds = RandomSeconds(),
-                        Polyline = [waypoint, waypoints[index + 1]],
-                        Instruction = $"Walk to stop {index + 1}",
-                        Maneuver = "TURN_LEFT"
-                    }
-                ]
-            }).ToArray()
-        };
-
-        GoogleRoutesMock.ReturnsRoute(waypoints, _googleRoute);
+        _googleRoute = GoogleRoutesApi.ReturnsWalkThrough(waypoints);
         return Task.CompletedTask;
     }
 
-    // Google leaves the instruction out of a step that has none, which is not an empty one.
     private Task Google_Returns_A_Walk_Whose_Step_Has_No_Instruction(params CoordinateResponse[] waypoints)
     {
-        _googleRoute = new GoogleRoute
-        {
-            DistanceMeters = RandomMeters(),
-            DurationSeconds = RandomSeconds(),
-            Polyline = waypoints,
-            Legs =
-            [
-                new GoogleLeg
-                {
-                    DistanceMeters = RandomMeters(),
-                    DurationSeconds = RandomSeconds(),
-                    Polyline = waypoints,
-                    Steps =
-                    [
-                        new GoogleStep
-                        {
-                            DistanceMeters = RandomMeters(),
-                            DurationSeconds = RandomSeconds(),
-                            Polyline = waypoints
-                        }
-                    ]
-                }
-            ]
-        };
-
-        GoogleRoutesMock.ReturnsRoute(waypoints, _googleRoute);
+        _googleRoute = GoogleRoutesApi.ReturnsWalkWithoutInstructionsThrough(waypoints);
         return Task.CompletedTask;
     }
 
     private Task Google_Routes_Nothing_Through(params CoordinateResponse[] waypoints)
     {
-        GoogleRoutesMock.ReturnsNoRoutes(waypoints);
+        GoogleRoutesApi.RoutesNothingThrough(waypoints);
         return Task.CompletedTask;
     }
 
     private Task Google_Answers_Unsuccessfully(params CoordinateResponse[] waypoints)
     {
-        GoogleRoutesMock.AnswersUnsuccessfully(waypoints);
-        _googleFailureLog =
-            $"Google Routes answered {(int)GoogleRoutesMock.RejectedApiKeyStatus} for {waypoints.Length} waypoints: " +
-            GoogleRoutesMock.ErrorBody;
-
+        _googleFailureLog = GoogleRoutesApi.AnswersUnsuccessfullyThrough(waypoints);
         return Task.CompletedTask;
     }
 

@@ -24,6 +24,21 @@ public static class RouteResponseExtensions
         CreatedAt = route.CreatedAt,
     };
 
+    public static RouteDetailResponse ToDetailResponse(this RouteDetailModel route) => new()
+    {
+        Id = route.Id,
+        Name = route.Name,
+        Tag = route.Tag,
+        Niche = route.Niche,
+        CreatedBy = route.CreatedByUsername,
+        UserId = route.CreatedByUserId,
+        Stops = route.Stops.Select(stop => stop.ToResponse()).ToArray(),
+        Polyline = route.Polyline.Select(coordinate => coordinate.ToResponse()).ToArray(),
+        DistanceMeters = route.DistanceMeters,
+        TotalMinutes = route.TotalMinutes,
+        CreatedAt = route.CreatedAt,
+    };
+
     public static CreatedRouteResponse ToResponse(this CreatedRouteModel route) => new()
     {
         Id = route.Id,

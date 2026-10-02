@@ -26,7 +26,11 @@ public partial class Get_Paged_Shops_Feature : FeatureFixture
     private const double Latitude = 51.5;
     private const double Longitude = -0.1;
 
+    // Above any vote count another feature seeds, so whichever niche is drawn these shops rank first in it.
+    private const int MostPopularVoteCount = 1_000_000;
+
     private readonly IFixture _fixture;
+    private readonly string _niche;
 
     private List<ShopEntity> _shops;
     private Dictionary<Guid, ShopHoursEntity> _hours = [];
@@ -44,17 +48,31 @@ public partial class Get_Paged_Shops_Feature : FeatureFixture
     public Get_Paged_Shops_Feature()
     {
         _fixture = new Fixture();
+        _niche = Random.Shared.Niche();
 
         EndpointLog = string.Format(CultureInfo.InvariantCulture,
-            "Getting page {0} of shops (size {1}) for niche {2}", Page, Size, NicheConstants.Cottagecore);
+            "Getting page {0} of shops (size {1}) for niche {2}", Page, Size, _niche);
     }
 
-    // Seeded with the niche under test. The niche-filtered scenarios use a niche no other feature
-    // seeds, so their query only ever sees this scenario's rows.
-    private async Task Shops_Exist(string niche)
+    private Task Shops_Exist(string niche) =>
+        Seed(ShopEntityBuilder.BuildMany(_fixture, SeededShopCount,
+            latitude: Latitude, longitude: Longitude, niches: niche));
+
+    // The shops table is shared and other features seed shops into whichever niche is drawn here, so a
+    // page can hold their rows too. Giving these shops the highest vote counts means they always fill the
+    // first pages of the niche, so the pages can be asserted exactly without owning the niche.
+    private Task The_Most_Popular_Shops_Exist(string niche) =>
+        Seed(Enumerable.Range(0, SeededShopCount)
+            .Select(rank => ShopEntityBuilder.Build(_fixture,
+                latitude: Latitude,
+                longitude: Longitude,
+                voteCount: MostPopularVoteCount - rank,
+                niches: niche))
+            .ToList());
+
+    private async Task Seed(List<ShopEntity> shops)
     {
-        _shops = ShopEntityBuilder.BuildMany(_fixture, SeededShopCount,
-            latitude: Latitude, longitude: Longitude, niches: niche);
+        _shops = shops;
 
         await ShopPersistenceProvider.Insert(_shops);
 
