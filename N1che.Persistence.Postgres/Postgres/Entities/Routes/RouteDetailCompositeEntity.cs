@@ -1,6 +1,6 @@
 namespace N1che.Persistence.Postgres.Postgres.Entities.Routes;
 
-/// <summary>A single route joined to the stops it holds, without its vote count.</summary>
+/// <summary>A single route joined to the stops it holds, without its geometry or vote count.</summary>
 public sealed record RouteDetailCompositeEntity
 {
     public required Guid Id { get; init; }
@@ -15,15 +15,8 @@ public sealed record RouteDetailCompositeEntity
 
     public required string CreatedByUsername { get; init; }
 
-    /// <summary>The stored LineString read back as a GeoJSON document.</summary>
-    public required string PolylineGeoJson { get; init; }
-
     /// <summary>The route's stops, joined to their live shop rows and aggregated in position order.</summary>
     public required string StopsJson { get; init; }
-
-    public required double DistanceMeters { get; init; }
-
-    public required int TotalMinutes { get; init; }
 
     public required DateTime CreatedAt { get; init; }
 }

@@ -135,9 +135,9 @@ public partial class Get_Route_By_Id_Feature : FeatureFixture
     private async Task The_Route_Is_Returned_With_The_Walk()
     {
         var legs = _googleRoute.Legs.ToArray();
-        var route = await _response.Content.ReadFromJsonAsync<RouteDetailResponse>();
+        var route = await _response.Content.ReadFromJsonAsync<ComputedRouteResponse>();
 
-        route.Should().BeEquivalentTo(new RouteDetailResponse
+        route.Should().BeEquivalentTo(new ComputedRouteResponse
         {
             Id = _route.Id,
             Name = _route.Name,

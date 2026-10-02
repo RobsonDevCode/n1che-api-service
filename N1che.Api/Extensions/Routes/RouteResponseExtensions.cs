@@ -24,19 +24,19 @@ public static class RouteResponseExtensions
         CreatedAt = route.CreatedAt,
     };
 
-    public static RouteDetailResponse ToDetailResponse(this RouteDetailModel route) => new()
+    public static ComputedRouteResponse ToResponse(this ComputedRouteModel route) => new()
     {
-        Id = route.Id,
-        Name = route.Name,
-        Tag = route.Tag,
-        Niche = route.Niche,
-        CreatedBy = route.CreatedByUsername,
-        UserId = route.CreatedByUserId,
-        Stops = route.Stops.Select(stop => stop.ToResponse()).ToArray(),
-        Polyline = route.Polyline.Select(coordinate => coordinate.ToResponse()).ToArray(),
-        DistanceMeters = route.DistanceMeters,
-        TotalMinutes = route.TotalMinutes,
-        CreatedAt = route.CreatedAt,
+        Id = route.Detail.Id,
+        Name = route.Detail.Name,
+        Tag = route.Detail.Tag,
+        Niche = route.Detail.Niche,
+        CreatedBy = route.Detail.CreatedByUsername,
+        UserId = route.Detail.CreatedByUserId,
+        Stops = route.Walk.Stops.Select(stop => stop.ToResponse()).ToArray(),
+        Polyline = route.Walk.Polyline.Select(coordinate => coordinate.ToResponse()).ToArray(),
+        DistanceMeters = route.Walk.DistanceMeters,
+        TotalMinutes = route.Walk.TotalMinutes,
+        CreatedAt = route.Detail.CreatedAt,
     };
 
     public static CreatedRouteResponse ToResponse(this CreatedRouteModel route) => new()

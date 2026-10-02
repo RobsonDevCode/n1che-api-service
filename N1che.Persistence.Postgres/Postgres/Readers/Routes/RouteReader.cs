@@ -99,9 +99,6 @@ public sealed class RouteReader : IRoutesReader
                    routes.niche,
                    routes.created_by_user_id,
                    routes.created_by_username,
-                   ST_AsGeoJSON(routes.polyline) AS polyline_geo_json,
-                   routes.distance_meters,
-                   routes.total_minutes,
                    routes.created_at,
                    COALESCE(stops.stops_json, '[]'::json) AS stops_json
             FROM routes

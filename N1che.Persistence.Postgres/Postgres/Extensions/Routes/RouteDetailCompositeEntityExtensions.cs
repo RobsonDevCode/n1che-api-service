@@ -17,9 +17,6 @@ public static class RouteDetailCompositeEntityExtensions
         Stops = JsonSerializer.Deserialize<IReadOnlyCollection<RouteStopCompositeEntity>>(entity.StopsJson, JsonSerializerOptions.Web)
             ?.Select(stop => stop.ToDomainModel())
             .ToArray() ?? [],
-        Polyline = GeoJsonLineString.ToCoordinates(entity.PolylineGeoJson),
-        DistanceMeters = entity.DistanceMeters,
-        TotalMinutes = entity.TotalMinutes,
         CreatedAt = entity.CreatedAt,
     };
 }

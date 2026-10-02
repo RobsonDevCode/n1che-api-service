@@ -25,7 +25,7 @@ internal static class GetRoutesEndpoints
         return group;
     }
 
-    private static async Task<Ok<RouteDetailResponse>> GetById(
+    private static async Task<Ok<ComputedRouteResponse>> GetById(
         [FromRoute] Guid id,
         [AsParameters] GetRouteFilter filter,
         [FromServices] IRouteRetrievalService routeRetrievalService,
@@ -46,7 +46,7 @@ internal static class GetRoutesEndpoints
 
         logger.LogInformation("Route retrieved");
 
-        return TypedResults.Ok(route.ToDetailResponse());
+        return TypedResults.Ok(route.ToResponse());
     }
 
     private static async Task<Ok<IReadOnlyCollection<RouteResponse>>> GetTopRatedNearby(

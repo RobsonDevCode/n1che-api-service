@@ -44,7 +44,7 @@ public sealed class RouteRetrievalService : IRouteRetrievalService
         return route!;
     }
 
-    public async Task<RouteDetailModel> GetComputedRouteAsync(Guid id, CoordinateModel origin, CancellationToken cancellationToken)
+    public async Task<ComputedRouteModel> GetComputedRouteAsync(Guid id, CoordinateModel origin, CancellationToken cancellationToken)
     {
         var route = await GetByIdAsync(id, cancellationToken);
 
@@ -67,12 +67,10 @@ public sealed class RouteRetrievalService : IRouteRetrievalService
             Mode = RouteModes.You,
         }, cancellationToken);
 
-        return route with
+        return new ComputedRouteModel
         {
-            Stops = walk.Stops,
-            Polyline = walk.Polyline,
-            DistanceMeters = walk.DistanceMeters,
-            TotalMinutes = walk.TotalMinutes,
+            Detail = route,
+            Walk = walk,
         };
     }
 }
