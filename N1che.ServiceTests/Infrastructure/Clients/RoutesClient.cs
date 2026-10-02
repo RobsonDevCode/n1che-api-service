@@ -24,4 +24,14 @@ internal static class RoutesClient
 
         return await client.GetAsync($"routes{query}");
     }
+
+    public static async Task<HttpResponseMessage> GetRouteById(this HttpClient client, Guid id, GetRouteFilter filter)
+    {
+        var query = new QueryBuilder()
+            .Add("lat", filter.Lat)
+            .Add("lng", filter.Lng)
+            .Build();
+
+        return await client.GetAsync($"routes/{id}{query}");
+    }
 }

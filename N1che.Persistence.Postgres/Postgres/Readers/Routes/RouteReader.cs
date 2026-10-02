@@ -88,4 +88,42 @@ public sealed class RouteReader : IRoutesReader
 
         return entities.Select(entity => entity.ToDomainModel()).ToArray();
     }
+
+    public async Task<RouteDetailModel?> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        const string sql =
+            """
+            SELECT routes.id,
+                   routes.name,
+                   routes.tag,
+                   routes.niche,
+                   routes.created_by_user_id,
+                   routes.created_by_username,
+                   routes.created_at,
+                   COALESCE(stops.stops_json, '[]'::json) AS stops_json
+            FROM routes
+            LEFT JOIN LATERAL (
+                SELECT json_agg(json_build_object(
+                           'id', shops.id,
+                           'name', shops.name,
+                           'address', shops.address,
+                           'latitude', ST_Y(shops.location::geometry),
+                           'longitude', ST_X(shops.location::geometry),
+                           'placeStatus', shops.place_status,
+                           'position', route_stops.position)
+                       ORDER BY route_stops.position) AS stops_json
+                FROM route_stops
+                JOIN shops ON shops.id = route_stops.shop_id
+                WHERE route_stops.route_id = routes.id
+            ) stops ON true
+            WHERE routes.id = @Id
+            """;
+
+        await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
+
+        var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: cancellationToken);
+        var entity = await connection.QuerySingleOrDefaultAsync<RouteDetailCompositeEntity>(command);
+
+        return entity?.ToDomainModel();
+    }
 }

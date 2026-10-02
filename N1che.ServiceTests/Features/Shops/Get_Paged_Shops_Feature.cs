@@ -14,10 +14,10 @@ public partial class Get_Paged_Shops_Feature
     [Scenario]
     public async Task Get_Paged_Shops_Returns_Pages_Ordered_By_Popularity_For_A_Niche()
     {
-        var filter = new ShopsFilter { Niche = [NicheConstants.Cottagecore] };
+        var filter = new ShopsFilter { Niche = [_niche] };
 
         await Runner.RunScenarioAsync(
-            given => Shops_Exist(NicheConstants.Cottagecore),
+            given => The_Most_Popular_Shops_Exist(_niche),
             when => GetShopsPage_Is_Called(filter, new PaginationFilter(Page, Size)),
             then => HttpResponse.Status_Code_Is(_response, HttpStatusCode.OK),
             and => The_Expected_Page_Is_Returned(),

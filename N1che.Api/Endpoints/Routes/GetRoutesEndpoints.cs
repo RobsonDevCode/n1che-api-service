@@ -17,7 +17,36 @@ internal static class GetRoutesEndpoints
             .WithSummary("Get Routes")
             .WithDescription("Get the top-rated routes within a radius of a location for a niche, most upvoted first");
 
+        group.MapGet("{id:guid}", GetById)
+            .WithValidation<GetRouteFilter>()
+            .WithSummary("Get Route By Id")
+            .WithDescription("Get a saved route with its walk computed from an origin through its stops");
+
         return group;
+    }
+
+    private static async Task<Ok<ComputedRouteResponse>> GetById(
+        [FromRoute] Guid id,
+        [AsParameters] GetRouteFilter filter,
+        [FromServices] IRouteRetrievalService routeRetrievalService,
+        [FromServices] ILoggerFactory loggerFactory,
+        CancellationToken cancellationToken)
+    {
+        var logger = loggerFactory.CreateLogger("Get Route By Id");
+        using var _ = logger.BeginScope(new Dictionary<string, object>
+        {
+            ["RouteId"] = id,
+            ["Latitude"] = filter.Lat,
+            ["Longitude"] = filter.Lng
+        });
+
+        logger.LogInformation("Getting route {RouteId} from ({Latitude}, {Longitude})", id, filter.Lat, filter.Lng);
+
+        var route = await routeRetrievalService.GetComputedRouteAsync(id, filter.ToDomainModel(), cancellationToken);
+
+        logger.LogInformation("Route retrieved");
+
+        return TypedResults.Ok(route.ToResponse());
     }
 
     private static async Task<Ok<IReadOnlyCollection<RouteResponse>>> GetTopRatedNearby(
