@@ -33,6 +33,7 @@ public partial class Save_Route_Feature : FeatureFixture
     private const string TagValidationMessage = "Tag is required.";
     private const string NicheValidationMessage = "Niche is required.";
     private const string PolylineValidationMessage = "A polyline is required.";
+    private const string SinglePointPolylineValidationMessage = "A polyline needs at least 2 points.";
     private const string TooFewStopsValidationMessage = "A route needs at least 2 stops.";
     private const string TooManyStopsValidationMessage = "A route can hold at most 15 stops.";
     private const string RepeatedStopValidationMessage = "A stop can only appear once in a route.";
@@ -72,6 +73,7 @@ public partial class Save_Route_Feature : FeatureFixture
     private readonly CreateRouteRequest _taglessRequest;
     private readonly CreateRouteRequest _nicheLessRequest;
     private readonly CreateRouteRequest _polylineLessRequest;
+    private readonly CreateRouteRequest _singlePointPolylineRequest;
 
     private ShopEntity[] _stops = [];
     private HttpResponseMessage _response = null!;
@@ -121,6 +123,7 @@ public partial class Save_Route_Feature : FeatureFixture
         _taglessRequest = _unknownStopRequest with { Tag = string.Empty };
         _nicheLessRequest = _unknownStopRequest with { Niche = string.Empty };
         _polylineLessRequest = _unknownStopRequest with { Polyline = [] };
+        _singlePointPolylineRequest = _unknownStopRequest with { Polyline = [_unknownStopRequest.Polyline.First()] };
     }
 
     private async Task Shops_Exist(int count)

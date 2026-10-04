@@ -34,4 +34,7 @@ internal static class RoutesClient
 
         return await client.GetAsync($"routes/{id}{query}");
     }
+
+    public static async Task<HttpResponseMessage> GetRouteInteractions(this HttpClient client, Guid id) =>
+        await client.GetAsync($"routes/{id}/interactions");
 }

@@ -91,6 +91,15 @@ public partial class Save_Route_Feature
     }
 
     [Scenario]
+    public async Task Save_Route_Returns_A_Validation_Error_When_The_Polyline_Has_A_Single_Point()
+    {
+        await Runner.RunScenarioAsync(
+            when => CreateRoute_Is_Called(_singlePointPolylineRequest),
+            then => HttpResponse.Status_Code_Is(_response, HttpStatusCode.BadRequest),
+            and => The_Response_Is_A_Validation_Error_For(PolylineField, SinglePointPolylineValidationMessage));
+    }
+
+    [Scenario]
     public async Task Save_Route_Returns_A_Validation_Error_When_The_Name_Is_Missing()
     {
         await Runner.RunScenarioAsync(

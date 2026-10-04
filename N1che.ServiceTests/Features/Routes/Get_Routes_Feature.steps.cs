@@ -135,7 +135,7 @@ public partial class Get_Routes_Feature : FeatureFixture
         await ShopPersistenceProvider.Insert(stops);
 
         var route = RouteEntityBuilder.Build(_fixture, stops, niche, voteCount, createdAt);
-        await RoutePersistenceProvider.Insert(route, stops);
+        await RoutePersistenceProvider.Upsert(route, stops);
 
         return (route, stops);
     }

@@ -99,7 +99,7 @@ public partial class Get_Route_By_Id_Feature : FeatureFixture
         await ShopPersistenceProvider.Insert(_stops);
 
         _route = RouteEntityBuilder.Build(_fixture, _stops, NicheConstants.Goth);
-        await RoutePersistenceProvider.Insert(_route, _stops);
+        await RoutePersistenceProvider.Upsert(_route, _stops);
 
         _tooFarMessage = string.Format(CultureInfo.InvariantCulture,
             "Route {0} starts more than {1} metres from the requested location.", _route.Id, MaxOriginDistanceMeters);
