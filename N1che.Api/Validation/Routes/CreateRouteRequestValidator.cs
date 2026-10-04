@@ -8,6 +8,7 @@ internal sealed class CreateRouteRequestValidator : AbstractValidator<CreateRout
     private const int MaxNameLength = 100;
     private const int MaxTagLength = 50;
     private const int MaxNicheLength = 50;
+    private const int MinPolylinePoints = 2;
 
     public CreateRouteRequestValidator()
     {
@@ -37,7 +38,9 @@ internal sealed class CreateRouteRequestValidator : AbstractValidator<CreateRout
             .WithMessage(RouteStopRules.RepeatedStop);
 
         RuleFor(request => request.Polyline)
-            .NotEmpty().WithMessage("A polyline is required.");
+            .NotEmpty().WithMessage("A polyline is required.")
+            .Must(polyline => polyline.Count >= MinPolylinePoints)
+            .WithMessage($"A polyline needs at least {MinPolylinePoints} points.");
 
         RuleForEach(request => request.Polyline).ChildRules(coordinate =>
         {

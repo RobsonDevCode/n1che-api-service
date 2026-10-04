@@ -63,6 +63,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IShopsReader, ShopReader>();
         services.AddScoped<IShopInteractionsReader, ShopInteractionsReader>();
         services.AddScoped<IRoutesReader, RouteReader>();
+        services.AddScoped<IRouteInteractionsReader, RouteInteractionsReader>();
         services.AddScoped<IRoutesWriter, RouteWriter>();
         services.AddScoped<IRouteStopsWriter, RouteStopsWriter>();
         services.AddScoped<IShopsWriter, ShopWriter>();
@@ -82,6 +83,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IShopVotingService, ShopVotingService>();
         services.AddScoped<IShopBookmarkingService, ShopBookmarkingService>();
         services.AddScoped<IRouteRetrievalService, RouteRetrievalService>();
+        services.AddScoped<IRouteInteractionsRetrievalService, RouteInteractionsRetrievalService>();
         services.AddScoped<IRouteComputationService, RouteComputationService>();
         services.AddScoped<IRouteCreationService, RouteCreationService>();
         services.AddScoped<IPlaceRetrievalService, PlaceRetrievalService>();

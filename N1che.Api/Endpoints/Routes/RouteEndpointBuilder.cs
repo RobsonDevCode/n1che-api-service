@@ -6,6 +6,7 @@ internal static class RouteEndpointBuilder
     {
         endpoints.MapGroup("routes")
             .AddGetRoutesEndpoints()
+            .AddGetRouteInteractionsEndpoints()
             .AddCreateRouteEndpoints()
             .AddComputeRouteEndpoints()
             .RequireAuthorization()

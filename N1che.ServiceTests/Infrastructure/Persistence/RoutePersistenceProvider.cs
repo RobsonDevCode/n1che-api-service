@@ -33,7 +33,7 @@ internal static class RoutePersistenceProvider
         """;
 
     // Stops must already exist as shops — route_stops.shop_id references them.
-    internal static async Task Insert(RouteEntity route, IReadOnlyList<ShopEntity> stops)
+    internal static async Task Upsert(RouteEntity route, IReadOnlyList<ShopEntity> stops)
     {
         await using var connection = new NpgsqlConnection(ConnectionString);
         await connection.OpenAsync();
@@ -45,6 +45,19 @@ internal static class RoutePersistenceProvider
                     ST_MakePoint(@AnchorLongitude, @AnchorLatitude)::geography,
                     ST_GeomFromGeoJSON(@PolylineGeoJson)::geography,
                     @DistanceMeters, @TotalMinutes, @VoteCount, @CreatedAt, @UpdatedAt)
+            ON CONFLICT (id) DO UPDATE
+            SET name = EXCLUDED.name,
+                tag = EXCLUDED.tag,
+                niche = EXCLUDED.niche,
+                created_by_user_id = EXCLUDED.created_by_user_id,
+                created_by_username = EXCLUDED.created_by_username,
+                anchor = EXCLUDED.anchor,
+                polyline = EXCLUDED.polyline,
+                distance_meters = EXCLUDED.distance_meters,
+                total_minutes = EXCLUDED.total_minutes,
+                vote_count = EXCLUDED.vote_count,
+                created_at = EXCLUDED.created_at,
+                updated_at = EXCLUDED.updated_at
             """,
             route);
 
@@ -54,6 +67,8 @@ internal static class RoutePersistenceProvider
                 """
                 INSERT INTO route_stops (route_id, shop_id, position)
                 VALUES (@RouteId, @ShopId, @Position)
+                ON CONFLICT (route_id, position) DO UPDATE
+                SET shop_id = EXCLUDED.shop_id
                 """,
                 new { RouteId = route.Id, ShopId = stops[position].Id, Position = position });
         }
