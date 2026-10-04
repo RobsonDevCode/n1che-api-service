@@ -41,7 +41,7 @@ internal static class GetShopsEndpoints
         CancellationToken cancellationToken)
     {
         var logger = loggerFactory.CreateLogger("Get Shops");
-        
+
         var nicheLabel = string.Join(" | ", filter.Niche ?? ["all"]);
         using var _ = logger.BeginScope(new Dictionary<string, object>
         {
@@ -97,7 +97,7 @@ internal static class GetShopsEndpoints
             filter.Lat, filter.Lng, filter.Niche ?? "all");
 
         var shops = await shopRetrievalService.GetNearbyAsync(filter.ToDomainFilter(), cancellationToken);
-        
+
         logger.LogInformation("Nearby shops retrieved");
 
         return TypedResults.Ok(shops.ToResponse());

@@ -91,7 +91,7 @@ public sealed class ShopReader : IShopsReader
             LIMIT @Limit OFFSET @Offset
             """;
 
-   
+
         await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
 
         var parameters = new
@@ -201,7 +201,7 @@ public sealed class ShopReader : IShopsReader
             WHERE (cardinality(@Niches) = 0 OR niches && @Niches)
             """;
 
-        
+
         await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
         var command = new CommandDefinition(sql, new { Niches = filterModel.Niche ?? [] }, cancellationToken: cancellationToken);
         return await connection.ExecuteScalarAsync<long>(command);

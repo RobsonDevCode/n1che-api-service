@@ -66,8 +66,8 @@ public sealed class RouteComputationService : IRouteComputationService
 
         IReadOnlyCollection<CoordinateModel> waypoints = route.Mode switch
         {
-            RouteModes.Loop => [..stopCoordinates, stopCoordinates[0]],
-            RouteModes.You when route.Origin is not null => [route.Origin, ..stopCoordinates],
+            RouteModes.Loop => [.. stopCoordinates, stopCoordinates[0]],
+            RouteModes.You when route.Origin is not null => [route.Origin, .. stopCoordinates],
             _ => stopCoordinates
         };
 

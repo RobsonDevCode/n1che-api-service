@@ -29,7 +29,10 @@ public partial class Get_Routes_Feature
     {
         var filter = new RoutesFilter
         {
-            Lat = _originLatitude, Lng = _originLongitude, Niche = NicheConstants.Goth, Radius = SmallRadiusMeters
+            Lat = _originLatitude,
+            Lng = _originLongitude,
+            Niche = NicheConstants.Goth,
+            Radius = SmallRadiusMeters
         };
 
         await Runner.RunScenarioAsync(
@@ -55,7 +58,10 @@ public partial class Get_Routes_Feature
     {
         var filter = new RoutesFilter
         {
-            Lat = _originLatitude, Lng = _originLongitude, Niche = NicheConstants.Goth, Limit = 2
+            Lat = _originLatitude,
+            Lng = _originLongitude,
+            Niche = NicheConstants.Goth,
+            Limit = 2
         };
 
         await Runner.RunScenarioAsync(
@@ -103,7 +109,10 @@ public partial class Get_Routes_Feature
     {
         var filter = new RoutesFilter
         {
-            Lat = _originLatitude, Lng = _originLongitude, Niche = NicheConstants.Goth, Radius = 0
+            Lat = _originLatitude,
+            Lng = _originLongitude,
+            Niche = NicheConstants.Goth,
+            Radius = 0
         };
 
         await Runner.RunScenarioAsync(
@@ -117,7 +126,10 @@ public partial class Get_Routes_Feature
     {
         var filter = new RoutesFilter
         {
-            Lat = _originLatitude, Lng = _originLongitude, Niche = NicheConstants.Goth, Limit = 500
+            Lat = _originLatitude,
+            Lng = _originLongitude,
+            Niche = NicheConstants.Goth,
+            Limit = 500
         };
 
         await Runner.RunScenarioAsync(
