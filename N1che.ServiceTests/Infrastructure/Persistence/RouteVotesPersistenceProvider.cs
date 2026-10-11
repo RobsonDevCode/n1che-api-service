@@ -1,4 +1,5 @@
 using Dapper;
+using N1che.Persistence.Postgres.Postgres.Entities.Routes;
 using Npgsql;
 
 namespace N1che.ServiceTests.Infrastructure.Persistence;
@@ -20,5 +21,20 @@ internal static class RouteVotesPersistenceProvider
             VALUES (@RouteId, @UserId)
             """,
             new { RouteId = routeId, UserId = userId });
+    }
+
+    internal static async Task<IEnumerable<RouteVoteEntity>> GetByRouteId(Guid routeId)
+    {
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        return await connection.QueryAsync<RouteVoteEntity>(
+            """
+            SELECT route_id, user_id, created_at
+            FROM route_votes
+            WHERE route_id = @routeId
+            ORDER BY created_at
+            """,
+            new { routeId });
     }
 }

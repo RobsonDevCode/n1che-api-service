@@ -4,7 +4,8 @@ public sealed class DuplicateRequestException(string entityType, params object[]
 {
     private const string ShopFormat = "Shop {0} already exists in the database.";
     private const string RouteFormat = "Route {0} already exists in the database.";
-    private const string VoteFormat = "Vote for shop {0} already exists.";
+    private const string ShopVoteFormat = "Vote for shop {0} already exists.";
+    private const string RouteVoteFormat = "Vote for route {0} already exists.";
     private const string BookmarkFormat = "Bookmark for shop {0} already exists.";
     private const string DefaultMessage = "An item with the same key has already been added.";
 
@@ -12,7 +13,8 @@ public sealed class DuplicateRequestException(string entityType, params object[]
     {
         EntityTypes.Shop => ShopFormat,
         EntityTypes.Route => RouteFormat,
-        EntityTypes.Vote => VoteFormat,
+        EntityTypes.ShopVote => ShopVoteFormat,
+        EntityTypes.RouteVote => RouteVoteFormat,
         EntityTypes.Bookmark => BookmarkFormat,
         _ => DefaultMessage
     };

@@ -33,7 +33,7 @@ public sealed class ShopVotesWriter : IShopVotesWriter
         }
         catch (PostgresException exception) when (exception.SqlState == PostgresErrorCodes.UniqueViolation)
         {
-            throw new DuplicateRequestException(EntityTypes.Vote, shopId);
+            throw new DuplicateRequestException(EntityTypes.ShopVote, shopId);
         }
         catch (PostgresException exception) when (exception.SqlState == PostgresErrorCodes.ForeignKeyViolation)
         {
@@ -41,7 +41,7 @@ public sealed class ShopVotesWriter : IShopVotesWriter
         }
     }
 
-    public async Task<bool> Delete(Guid shopId, string userId, CancellationToken cancellationToken)
+    public async Task Delete(Guid shopId, string userId, CancellationToken cancellationToken)
     {
         const string sql =
             """
@@ -54,6 +54,9 @@ public sealed class ShopVotesWriter : IShopVotesWriter
 
         var command = new CommandDefinition(sql, new { ShopId = shopId, UserId = userId }, cancellationToken: cancellationToken);
 
-        return await connection.ExecuteAsync(command) > 0;
+        if (await connection.ExecuteAsync(command) == 0)
+        {
+            throw new NotFoundException(EntityTypes.ShopVote, shopId);
+        }
     }
 }

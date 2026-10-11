@@ -37,4 +37,10 @@ internal static class RoutesClient
 
     public static async Task<HttpResponseMessage> GetRouteInteractions(this HttpClient client, Guid id) =>
         await client.GetAsync($"routes/{id}/interactions");
+
+    public static async Task<HttpResponseMessage> AddRouteVote(this HttpClient client, Guid id) =>
+        await client.PostAsync($"routes/{id}/vote", content: null);
+
+    public static async Task<HttpResponseMessage> RemoveRouteVote(this HttpClient client, Guid id) =>
+        await client.DeleteAsync($"routes/{id}/vote");
 }

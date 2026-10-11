@@ -11,7 +11,8 @@ public interface IBookmarksWriter
     Task Create(Guid shopId, string userId, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Removes the user's bookmark of the shop, returning whether one was there to remove.
+    /// Removes the user's bookmark of the shop. Throws <see cref="Exceptions.NotFoundException"/> when the user
+    /// has not bookmarked it.
     /// </summary>
-    Task<bool> Delete(Guid shopId, string userId, CancellationToken cancellationToken);
+    Task Delete(Guid shopId, string userId, CancellationToken cancellationToken);
 }

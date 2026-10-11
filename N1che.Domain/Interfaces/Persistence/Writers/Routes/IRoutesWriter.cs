@@ -7,4 +7,10 @@ public interface IRoutesWriter
 {
     /// <summary>Creates the route anchored at that point, and returns the identity the store gave it.</summary>
     Task<CreatedRouteModel> Create(CreateRouteModel route, CoordinateModel anchor, CancellationToken cancellationToken);
+
+    /// <summary>Adds one to the route's denormalised vote counter.</summary>
+    Task IncrementVoteCount(Guid routeId, CancellationToken cancellationToken);
+
+    /// <summary>Takes one off the route's denormalised vote counter, never below zero.</summary>
+    Task DecrementVoteCount(Guid routeId, CancellationToken cancellationToken);
 }

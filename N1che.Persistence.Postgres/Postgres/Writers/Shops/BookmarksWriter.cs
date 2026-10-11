@@ -41,7 +41,7 @@ public sealed class BookmarksWriter : IBookmarksWriter
         }
     }
 
-    public async Task<bool> Delete(Guid shopId, string userId, CancellationToken cancellationToken)
+    public async Task Delete(Guid shopId, string userId, CancellationToken cancellationToken)
     {
         const string sql =
             """
@@ -54,6 +54,9 @@ public sealed class BookmarksWriter : IBookmarksWriter
 
         var command = new CommandDefinition(sql, new { ShopId = shopId, UserId = userId }, cancellationToken: cancellationToken);
 
-        return await connection.ExecuteAsync(command) > 0;
+        if (await connection.ExecuteAsync(command) == 0)
+        {
+            throw new NotFoundException(EntityTypes.Bookmark, shopId);
+        }
     }
 }

@@ -24,18 +24,11 @@ public sealed class ShopBookmarkingService : IShopBookmarkingService
 
     public async Task RemoveAsync(Guid shopId, UserModel user, CancellationToken cancellationToken)
     {
-        var removed = await _bookmarksWriter.Delete(shopId, user.Id, cancellationToken);
-        if (removed)
+        if (!await _shopsReader.Exists(shopId, cancellationToken))
         {
-            return;
+            throw new NotFoundException(EntityTypes.Shop, shopId);
         }
 
-        // A delete that removed nothing means the shop is gone or the bookmark never existed; the
-        // missing shop is the more informative of the two, so it wins.
-        var shopExists = await _shopsReader.Exists(shopId, cancellationToken);
-
-        throw shopExists
-            ? new NotFoundException(EntityTypes.Bookmark, shopId)
-            : new NotFoundException(EntityTypes.Shop, shopId);
+        await _bookmarksWriter.Delete(shopId, user.Id, cancellationToken);
     }
 }

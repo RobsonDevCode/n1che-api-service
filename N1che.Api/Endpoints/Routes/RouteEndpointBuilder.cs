@@ -9,6 +9,7 @@ internal static class RouteEndpointBuilder
             .AddGetRouteInteractionsEndpoints()
             .AddCreateRouteEndpoints()
             .AddComputeRouteEndpoints()
+            .AddRouteVoteEndpoints()
             .RequireAuthorization()
             .WithTags("routes");
 

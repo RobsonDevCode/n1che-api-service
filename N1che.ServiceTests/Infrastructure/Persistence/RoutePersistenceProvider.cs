@@ -84,6 +84,16 @@ internal static class RoutePersistenceProvider
             new { name });
     }
 
+    internal static async Task<RouteEntity> GetById(Guid id)
+    {
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        return await connection.QuerySingleAsync<RouteEntity>(
+            $"{RouteProjection} WHERE id = @id",
+            new { id });
+    }
+
     internal static async Task<int> CountByName(string name)
     {
         await using var connection = new NpgsqlConnection(ConnectionString);

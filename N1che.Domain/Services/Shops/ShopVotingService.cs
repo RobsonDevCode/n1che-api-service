@@ -39,20 +39,13 @@ public sealed class ShopVotingService : IShopVotingService
     {
         await _transactionScope.ExecuteAsync(async token =>
         {
-            var removed = await _shopVotesWriter.Delete(shopId, user.Id, token);
-            if (removed)
+            if (!await _shopsReader.Exists(shopId, token))
             {
-                await _shopsWriter.DecrementVoteCount(shopId, token);
-                return;
+                throw new NotFoundException(EntityTypes.Shop, shopId);
             }
 
-            // A delete that removed nothing means the shop is gone or the vote never existed; the
-            // missing shop is the more informative of the two, so it wins.
-            var shopExists = await _shopsReader.Exists(shopId, token);
-
-            throw shopExists
-                ? new NotFoundException(EntityTypes.Vote, shopId)
-                : new NotFoundException(EntityTypes.Shop, shopId);
+            await _shopVotesWriter.Delete(shopId, user.Id, token);
+            await _shopsWriter.DecrementVoteCount(shopId, token);
         }, cancellationToken);
     }
 }

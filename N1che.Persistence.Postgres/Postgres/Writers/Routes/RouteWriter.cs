@@ -68,4 +68,36 @@ public sealed class RouteWriter : IRoutesWriter
             throw new InvalidRequestException(EntityTypes.Niche, route.Niche);
         }
     }
+
+    public async Task IncrementVoteCount(Guid routeId, CancellationToken cancellationToken)
+    {
+        const string sql =
+            """
+            UPDATE routes
+            SET vote_count = vote_count + 1,
+                updated_at = now()
+            WHERE id = @RouteId
+            """;
+
+        await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
+
+        var command = new CommandDefinition(sql, new { RouteId = routeId }, cancellationToken: cancellationToken);
+        await connection.ExecuteAsync(command);
+    }
+
+    public async Task DecrementVoteCount(Guid routeId, CancellationToken cancellationToken)
+    {
+        const string sql =
+            """
+            UPDATE routes
+            SET vote_count = GREATEST(vote_count - 1, 0),
+                updated_at = now()
+            WHERE id = @RouteId
+            """;
+
+        await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
+
+        var command = new CommandDefinition(sql, new { RouteId = routeId }, cancellationToken: cancellationToken);
+        await connection.ExecuteAsync(command);
+    }
 }

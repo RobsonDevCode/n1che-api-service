@@ -11,7 +11,8 @@ public interface IShopVotesWriter
     Task Create(Guid shopId, string userId, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Removes the user's vote for the shop, returning whether one was there to remove.
+    /// Removes the user's vote for the shop. Throws <see cref="Exceptions.NotFoundException"/> when the user
+    /// has not voted for it.
     /// </summary>
-    Task<bool> Delete(Guid shopId, string userId, CancellationToken cancellationToken);
+    Task Delete(Guid shopId, string userId, CancellationToken cancellationToken);
 }

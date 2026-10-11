@@ -126,4 +126,14 @@ public sealed class RouteReader : IRoutesReader
 
         return entity?.ToDomainModel();
     }
+
+    public async Task<bool> Exists(Guid id, CancellationToken cancellationToken)
+    {
+        const string sql = "SELECT EXISTS (SELECT 1 FROM routes WHERE id = @Id)";
+
+        await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
+
+        var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: cancellationToken);
+        return await connection.ExecuteScalarAsync<bool>(command);
+    }
 }
