@@ -113,7 +113,7 @@ public partial class Search_Places_Feature : FeatureFixture
             _photographedPlace with { Photo = photo with { GoogleMapsUri = null } };
         _photographedPlaceWithNamelessAuthor = _photographedPlace with
         {
-            Photo = photo with { AuthorAttributions = [..photo.AuthorAttributions, Author() with { DisplayName = null }] }
+            Photo = photo with { AuthorAttributions = [.. photo.AuthorAttributions, Author() with { DisplayName = null }] }
         };
         _photographedPlaceWithoutPhoto = _photographedPlace with { Photo = null };
 
