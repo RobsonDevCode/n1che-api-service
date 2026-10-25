@@ -1,3 +1,4 @@
+using N1che.Domain.Exceptions;
 using N1che.Domain.Interfaces.Services.Places;
 using N1che.Domain.Interfaces.ThirdParty;
 using N1che.Domain.Models.Places;
@@ -17,5 +18,12 @@ public sealed class PlaceRetrievalService : IPlaceRetrievalService
         PlacesSearchFilterModel filter, CancellationToken cancellationToken)
     {
         return _googlePlacesClient.SearchPlaces(filter, cancellationToken);
+    }
+
+    public async Task<PlacePhotoMediaModel> GetPhotoMediaAsync(
+        PlacePhotoMediaFilterModel filter, CancellationToken cancellationToken)
+    {
+        return await _googlePlacesClient.GetPlacePhotoMedia(filter, cancellationToken)
+               ?? throw new NotFoundException(EntityTypes.Photo, filter.Reference);
     }
 }

@@ -101,9 +101,24 @@ internal static class GooglePlacesMock
                             displayName = new { text = result.Name, languageCode = LanguageCode },
                             formattedAddress = result.Address,
                             location = new { latitude = result.Latitude, longitude = result.Longitude },
-                            photos = result.PhotoName is null
+                            photos = result.Photo is null
                                 ? null
-                                : new[] { new { name = result.PhotoName } }
+                                : new[]
+                                {
+                                    new
+                                    {
+                                        name = result.Photo.Name,
+                                        googleMapsUri = result.Photo.GoogleMapsUri,
+                                        authorAttributions = result.Photo.AuthorAttributions
+                                            .Select(author => new
+                                            {
+                                                displayName = author.DisplayName,
+                                                uri = author.Uri,
+                                                photoUri = author.PhotoUri
+                                            })
+                                            .ToArray()
+                                    }
+                                }
                         }).ToArray()
                 }));
     }
@@ -114,6 +129,32 @@ internal static class GooglePlacesMock
             .Given(SearchRequestFor(filter))
             .RespondWith(Response.Create().WithStatusCode(statusCode).WithBody(ErrorBody));
     }
+
+    internal static void ReturnsPhotoMedia(string reference, int maxWidth, string photoUri)
+    {
+        Server
+            .Given(PhotoMediaRequestFor(reference, maxWidth))
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithBodyAsJson(new { name = $"{reference}/media", photoUri }));
+    }
+
+    internal static void AnswersPhotoMediaWith(string reference, int maxWidth, HttpStatusCode statusCode)
+    {
+        Server
+            .Given(PhotoMediaRequestFor(reference, maxWidth))
+            .RespondWith(Response.Create().WithStatusCode(statusCode).WithBody(ErrorBody));
+    }
+
+    // skipHttpRedirect is part of the match, since without it Google answers with a redirect to the image
+    // rather than its address.
+    private static IRequestBuilder PhotoMediaRequestFor(string reference, int maxWidth) =>
+        Request.Create()
+            .WithPath($"/v1/{reference}/media")
+            .UsingGet()
+            .WithHeader(ApiKeyHeader, ApiKey)
+            .WithParam("maxWidthPx", maxWidth.ToString())
+            .WithParam("skipHttpRedirect", "true");
 
     // The search box is part of the match, so a client that widens, narrows or drops the caller's area
     // gets no stubbed places rather than quietly searching somewhere else.

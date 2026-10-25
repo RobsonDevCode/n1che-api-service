@@ -14,5 +14,5 @@ internal sealed record GoogleSearchResult
 
     public required double Longitude { get; init; }
 
-    public string? PhotoName { get; init; }
+    public GooglePhoto? Photo { get; init; }
 }

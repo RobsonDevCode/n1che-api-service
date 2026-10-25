@@ -30,7 +30,32 @@ public static class PlaceSearchResponseExtensions
             Address = place.FormattedAddress,
             Latitude = place.Location.Latitude,
             Longitude = place.Location.Longitude,
-            PhotoReference = place.Photos?.FirstOrDefault()?.Name,
+            Photo = ToPhoto(place.Photos?.FirstOrDefault()),
+        };
+    }
+
+    // Google's terms require every photo to link to its source on Google Maps, so one without that link
+    // cannot be shown and is dropped. An author with no name cannot be credited, so is dropped too.
+    private static PlacePhotoModel? ToPhoto(PlacePhotoResponse? photo)
+    {
+        if (string.IsNullOrWhiteSpace(photo?.Name) || string.IsNullOrWhiteSpace(photo.GoogleMapsUri))
+        {
+            return null;
+        }
+
+        return new PlacePhotoModel
+        {
+            Reference = photo.Name,
+            GoogleMapsUri = photo.GoogleMapsUri,
+            AuthorAttributions = (photo.AuthorAttributions ?? [])
+                .Where(author => !string.IsNullOrWhiteSpace(author.DisplayName))
+                .Select(author => new PhotoAuthorAttributionModel
+                {
+                    DisplayName = author.DisplayName!,
+                    Uri = author.Uri,
+                    PhotoUri = author.PhotoUri,
+                })
+                .ToArray(),
         };
     }
 }

@@ -18,4 +18,12 @@ public interface IGooglePlacesClient
     /// <see cref="Exceptions.GooglePlacesException"/> when Google fails to answer.
     /// </summary>
     Task<IReadOnlyCollection<PlaceModel>> SearchPlaces(PlacesSearchFilterModel filter, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Gets a short-lived public address for a place photo's image, or <c>null</c> when Google has no
+    /// photo with that reference. Throws <see cref="Exceptions.InvalidRequestException"/> when Google
+    /// will not accept the reference, and <see cref="Exceptions.GooglePlacesException"/> when Google
+    /// fails to answer.
+    /// </summary>
+    Task<PlacePhotoMediaModel?> GetPlacePhotoMedia(PlacePhotoMediaFilterModel filter, CancellationToken cancellationToken);
 }

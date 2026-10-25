@@ -10,4 +10,12 @@ public interface IPlaceRetrievalService
     /// <see cref="Exceptions.GooglePlacesException"/> when Google fails to answer.
     /// </summary>
     Task<IReadOnlyCollection<PlaceModel>> SearchAsync(PlacesSearchFilterModel filter, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Gets a short-lived public address for a place photo's image. Throws
+    /// <see cref="Exceptions.NotFoundException"/> when Google has no photo with that reference,
+    /// <see cref="Exceptions.InvalidRequestException"/> when Google will not accept it, and
+    /// <see cref="Exceptions.GooglePlacesException"/> when Google fails to answer.
+    /// </summary>
+    Task<PlacePhotoMediaModel> GetPhotoMediaAsync(PlacePhotoMediaFilterModel filter, CancellationToken cancellationToken);
 }
