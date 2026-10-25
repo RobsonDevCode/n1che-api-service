@@ -27,5 +27,6 @@ public static class ReviewResponseExtensions
         Username = review.Username,
         Text = review.Text,
         CreatedAt = review.CreatedAt,
+        UpdatedAt = review.UpdatedAt,
     };
 }

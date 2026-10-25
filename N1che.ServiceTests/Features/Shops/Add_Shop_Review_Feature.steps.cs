@@ -112,6 +112,7 @@ public partial class Add_Shop_Review_Feature : FeatureFixture
             Username = _callerUsername,
             Text = _request.Text,
             CreatedAt = stored.CreatedAt,
+            UpdatedAt = stored.UpdatedAt,
         }, options => options
             .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromSeconds(1)))
             .WhenTypeIs<DateTime>());
