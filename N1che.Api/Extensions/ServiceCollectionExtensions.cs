@@ -93,6 +93,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IShopInteractionsRetrievalService, ShopInteractionsRetrievalService>();
         services.AddScoped<IReviewRetrievalService, ReviewRetrievalService>();
         services.AddScoped<IReviewCreationService, ReviewCreationService>();
+        services.AddScoped<IReviewUpdateService, ReviewUpdateService>();
         services.AddScoped<IShopCreationService, ShopCreationService>();
         services.AddScoped<IShopVotingService, ShopVotingService>();
         services.AddScoped<IShopBookmarkingService, ShopBookmarkingService>();
@@ -146,6 +147,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IValidator<ShopsFilter>, ShopsFilterValidator>();
         services.AddSingleton<IValidator<ReviewsFilter>, ReviewsFilterValidator>();
         services.AddSingleton<IValidator<CreateReviewRequest>, CreateReviewRequestValidator>();
+        services.AddSingleton<IValidator<UpdateReviewRequest>, UpdateReviewRequestValidator>();
         services.AddSingleton<IValidator<RoutesFilter>, RoutesFilterValidator>();
         services.AddSingleton<IValidator<GetRouteFilter>, GetRouteFilterValidator>();
         services.AddSingleton<IValidator<ComputeRouteRequest>, ComputeRouteRequestValidator>();

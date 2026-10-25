@@ -93,4 +93,43 @@ public sealed class ReviewWriter : IReviewsWriter
             throw new NotFoundException(EntityTypes.Shop, review.ShopId);
         }
     }
+
+    public async Task<ReviewModel> Update(UpdateReviewRequestModel review, CancellationToken cancellationToken)
+    {
+        const string sql =
+            """
+            UPDATE reviews
+            SET body = @Body,
+                update_count = update_count + 1,
+                updated_at = now()
+            WHERE id = @Id
+            AND shop_id = @ShopId
+            AND user_id = @UserId
+            RETURNING id,
+                      shop_id,
+                      niche,
+                      user_id,
+                      username,
+                      body,
+                      update_count,
+                      created_at,
+                      updated_at
+            """;
+
+        await using var connection = await _connectionFactory.ConnectAsync(cancellationToken);
+
+        var parameters = new
+        {
+            review.Id,
+            review.ShopId,
+            review.UserId,
+            Body = review.Text,
+        };
+
+        var command = new CommandDefinition(sql, parameters, cancellationToken: cancellationToken);
+        var entity = await connection.QuerySingleOrDefaultAsync<ReviewEntity>(command)
+                     ?? throw new NotFoundException(EntityTypes.Review, review.Id);
+
+        return entity.ToDomainModel();
+    }
 }
