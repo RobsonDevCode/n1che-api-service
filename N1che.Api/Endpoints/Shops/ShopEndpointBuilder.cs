@@ -8,6 +8,7 @@ internal static class ShopEndpointBuilder
             .AddGetShopsEndpoints()
             .AddGetShopInteractionsEndpoints()
             .AddGetShopReviewsEndpoints()
+            .AddCreateShopReviewEndpoints()
             .AddCreateShopEndpoints()
             .AddShopVoteEndpoints()
             .AddShopBookmarkEndpoints()

@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using N1che.Contracts.Filters.Pagination;
 using N1che.Contracts.Filters.Reviews;
 using N1che.Contracts.Filters.Shops;
+using N1che.Contracts.Requests.Reviews;
 using N1che.Contracts.Requests.Shops;
 
 namespace N1che.ServiceTests.Infrastructure.Clients;
@@ -56,5 +57,10 @@ internal static class ShopsClient
             .Build();
 
         return await client.GetAsync($"shops/{id}/reviews{query}");
+    }
+
+    public static async Task<HttpResponseMessage> CreateShopReview(this HttpClient client, Guid id, CreateReviewRequest request)
+    {
+        return await client.PostAsJsonAsync($"shops/{id}/reviews", request);
     }
 }
