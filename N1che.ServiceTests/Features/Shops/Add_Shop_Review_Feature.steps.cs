@@ -60,23 +60,26 @@ public partial class Add_Shop_Review_Feature : FeatureFixture
     {
         _fixture = new Fixture();
 
+        var niche = Random.Shared.Niche();
+        var otherNiche = Random.Shared.NicheOtherThan(niche);
+
         _shop = ShopEntityBuilder.Build(_fixture,
             latitude: Random.Shared.Latitude(),
             longitude: Random.Shared.Longitude(),
-            niches: [NicheConstants.Goth, NicheConstants.Vintage]);
+            niches: niche);
 
         _request = new CreateReviewRequest
         {
             Text = _fixture.Create<string>(),
-            Niche = NicheConstants.Goth,
+            Niche = niche,
         };
 
-        _otherNicheRequest = _request with { Niche = NicheConstants.Skater };
+        _otherNicheRequest = _request with { Niche = otherNiche };
         _textlessRequest = _request with { Text = string.Empty };
         _tooLongRequest = _request with { Text = new string('a', TooLongTextLength) };
         _nicheLessRequest = _request with { Niche = string.Empty };
 
-        _otherNicheMessage = $"Shop {_shop.Id} is not listed under niche {NicheConstants.Skater}.";
+        _otherNicheMessage = $"Shop {_shop.Id} is not listed under niche {otherNiche}.";
         _notFoundMessage = $"Shop {_unknownShopId} not found";
     }
 
