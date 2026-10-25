@@ -16,9 +16,6 @@
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.12" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
         <PackageReference Include="Npgsql" Version="10.0.3" />
-        <PackageReference Include="NUnit" Version="4.3.2" />
-        <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
-        <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
         <PackageReference Include="Testcontainers" Version="4.14.0" />
         <PackageReference Include="Testcontainers.PostgreSql" Version="4.14.0" />
         <PackageReference Include="WireMock.Net" Version="2.15.0" />
@@ -26,10 +23,6 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Using Include="NUnit.Framework" />
     </ItemGroup>
 
     <ItemGroup>
