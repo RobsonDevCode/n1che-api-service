@@ -33,11 +33,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\N1che.Api\N1che.Api.csproj" />
+      <ProjectReference Include="..\..\src\N1che.Api\N1che.Api.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="..\N1che.Persistence.Postgres\Migrations\*.sql">
+      <None Include="..\..\src\N1che.Persistence.Postgres\Migrations\*.sql">
         <Link>Migrations\%(Filename)%(Extension)</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
