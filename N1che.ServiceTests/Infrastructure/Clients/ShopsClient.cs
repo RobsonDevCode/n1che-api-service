@@ -63,4 +63,9 @@ internal static class ShopsClient
     {
         return await client.PostAsJsonAsync($"shops/{id}/reviews", request);
     }
+
+    public static async Task<HttpResponseMessage> UpdateShopReview(this HttpClient client, Guid shopId, Guid reviewId, UpdateReviewRequest request)
+    {
+        return await client.PutAsJsonAsync($"shops/{shopId}/reviews/{reviewId}", request);
+    }
 }

@@ -11,4 +11,10 @@ public interface IReviewsWriter
     /// the review's niche.
     /// </summary>
     Task<ReviewModel> Create(CreateReviewRequestModel review, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Replaces the review's text and returns it as stored. Throws <see cref="Exceptions.NotFoundException"/>
+    /// when the shop has no review with that id written by the user.
+    /// </summary>
+    Task<ReviewModel> Update(UpdateReviewRequestModel review, CancellationToken cancellationToken);
 }
