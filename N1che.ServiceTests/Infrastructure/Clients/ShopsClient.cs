@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using N1che.Contracts.Filters.Pagination;
+using N1che.Contracts.Filters.Reviews;
 using N1che.Contracts.Filters.Shops;
 using N1che.Contracts.Requests.Shops;
 
@@ -44,5 +45,16 @@ internal static class ShopsClient
             .Build();
 
         return await client.GetAsync($"shops{query}");
+    }
+
+    public static async Task<HttpResponseMessage> GetShopReviews(this HttpClient client, Guid id, ReviewsFilter filter, PaginationFilter pagination)
+    {
+        var query = new QueryBuilder()
+            .Add("niche", filter.Niche)
+            .Add("page", pagination.Page)
+            .Add("size", pagination.Size)
+            .Build();
+
+        return await client.GetAsync($"shops/{id}/reviews{query}");
     }
 }
