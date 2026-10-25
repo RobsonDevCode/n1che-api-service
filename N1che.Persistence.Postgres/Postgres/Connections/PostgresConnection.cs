@@ -7,6 +7,10 @@ public sealed class PostgresConnection(NpgsqlConnection connection, bool ownsCon
 {
     public Task<IEnumerable<T>> QueryAsync<T>(CommandDefinition command) => connection.QueryAsync<T>(command);
 
+    public Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TReturn>(
+        CommandDefinition command, Func<TFirst, TSecond, TReturn> map, string splitOn) =>
+        connection.QueryAsync(command, map, splitOn);
+
     public Task<T?> QuerySingleOrDefaultAsync<T>(CommandDefinition command) => connection.QuerySingleOrDefaultAsync<T>(command);
 
     // Dapper annotates the result as nullable although a missing row throws instead.

@@ -25,4 +25,18 @@ internal static class ReviewsPersistenceProvider
                 review);
         }
     }
+
+    internal static async Task<IEnumerable<ReviewEntity>> GetByShopId(Guid shopId)
+    {
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await connection.OpenAsync();
+
+        return await connection.QueryAsync<ReviewEntity>(
+            """
+            SELECT id, shop_id, niche, user_id, username, body, update_count, created_at, updated_at
+            FROM reviews
+            WHERE shop_id = @ShopId
+            """,
+            new { ShopId = shopId });
+    }
 }

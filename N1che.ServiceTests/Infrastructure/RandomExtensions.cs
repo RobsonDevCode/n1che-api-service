@@ -17,6 +17,13 @@ internal static class RandomExtensions
     /// <summary>One of the niches the migrations seed, so it satisfies the foreign key to `niches`.</summary>
     internal static string Niche(this Random random) => SeededNiches[random.Next(SeededNiches.Length)];
 
+    internal static string NicheOtherThan(this Random random, string niche)
+    {
+        var others = SeededNiches.Where(seeded => seeded != niche).ToArray();
+
+        return others[random.Next(others.Length)];
+    }
+
     // Coordinates stay inside the WGS 84 bounds so the geography cast doesn't silently coerce them.
     internal static double Latitude(this Random random) => random.Next(-80, 80) + random.NextDouble();
 

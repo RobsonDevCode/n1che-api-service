@@ -14,5 +14,6 @@ public static class ReviewEntityExtensions
         Username = entity.Username,
         Text = entity.Body,
         CreatedAt = entity.CreatedAt,
+        UpdatedAt = entity.UpdatedAt,
     };
 }

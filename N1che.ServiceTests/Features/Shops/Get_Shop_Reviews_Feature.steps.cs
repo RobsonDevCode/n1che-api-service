@@ -113,7 +113,8 @@ public partial class Get_Shop_Reviews_Feature : FeatureFixture
                     UserId = review.UserId,
                     Username = review.Username,
                     Text = review.Body,
-                    CreatedAt = review.CreatedAt
+                    CreatedAt = review.CreatedAt,
+                    UpdatedAt = review.UpdatedAt
                 }),
             PaginationDetails = new PaginationDetailsResponse
             {
