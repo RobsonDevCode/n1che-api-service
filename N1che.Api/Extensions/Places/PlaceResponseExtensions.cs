@@ -15,6 +15,20 @@ public static class PlaceResponseExtensions
         Address = place.Address,
         Latitude = place.Latitude,
         Longitude = place.Longitude,
-        PhotoReference = place.PhotoReference,
+        Photo = place.Photo?.ToResponse(),
+    };
+
+    private static PlacePhotoResponse ToResponse(this PlacePhotoModel photo) => new()
+    {
+        Reference = photo.Reference,
+        GoogleMapsUri = photo.GoogleMapsUri,
+        AuthorAttributions = photo.AuthorAttributions
+            .Select(author => new PhotoAuthorAttributionResponse
+            {
+                DisplayName = author.DisplayName,
+                Uri = author.Uri,
+                PhotoUri = author.PhotoUri,
+            })
+            .ToArray(),
     };
 }

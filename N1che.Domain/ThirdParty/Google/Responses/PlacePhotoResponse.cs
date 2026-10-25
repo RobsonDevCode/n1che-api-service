@@ -5,4 +5,8 @@ public sealed record PlacePhotoResponse
 {
     /// <summary>Google's resource name for the photo, of the form <c>places/{placeId}/photos/{photoId}</c>.</summary>
     public string? Name { get; init; }
+
+    public string? GoogleMapsUri { get; init; }
+
+    public IReadOnlyCollection<PlaceAuthorAttributionResponse>? AuthorAttributions { get; init; }
 }

@@ -16,6 +16,6 @@ public record PlaceModel
 
     public required double Longitude { get; init; }
 
-    /// <summary>Google's resource name for the place's first photo; null when it holds none.</summary>
-    public string? PhotoReference { get; init; }
+    /// <summary>The place's first photo; null when Google holds none it can be shown with.</summary>
+    public PlacePhotoModel? Photo { get; init; }
 }

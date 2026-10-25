@@ -4,6 +4,7 @@ public sealed class InvalidRequestException(string entityType, params object[] p
 {
     private const string NicheFormat = "Niche {0} is not recognised.";
     private const string PlaceFormat = "Google place {0} cannot be added.";
+    private const string PhotoFormat = "Photo {0} cannot be loaded.";
     private const string RouteFormat = "No walking route runs through the requested stops.";
     private const string ReviewFormat = "Shop {0} is not listed under niche {1}.";
     private const string DefaultMessage = "The request could not be processed.";
@@ -12,6 +13,7 @@ public sealed class InvalidRequestException(string entityType, params object[] p
     {
         EntityTypes.Niche => NicheFormat,
         EntityTypes.Place => PlaceFormat,
+        EntityTypes.Photo => PhotoFormat,
         EntityTypes.Route => RouteFormat,
         EntityTypes.Review => ReviewFormat,
         _ => DefaultMessage

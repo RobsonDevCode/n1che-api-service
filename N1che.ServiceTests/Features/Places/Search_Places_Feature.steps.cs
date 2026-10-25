@@ -63,6 +63,11 @@ public partial class Search_Places_Feature : FeatureFixture
     private readonly GoogleSearchResult _unphotographedPlace;
     private readonly GoogleSearchResult _addresslessPlace;
 
+    // The photographed place as Google sometimes returns it, each answered for by what the API sends back.
+    private readonly GoogleSearchResult _photographedPlaceWithoutGoogleMapsLink;
+    private readonly GoogleSearchResult _photographedPlaceWithNamelessAuthor;
+    private readonly GoogleSearchResult _photographedPlaceWithoutPhoto;
+
     private readonly string _endpointLog;
     private readonly string _googleFailureLog;
     private readonly Dictionary<string, object> _scopeValues;
@@ -92,9 +97,25 @@ public partial class Search_Places_Feature : FeatureFixture
         _tallAreaFilter = _filter with { NeLat = SouthWestLatitude + OversizedSpan };
         _wideAreaFilter = _filter with { NeLng = SouthWestLongitude + OversizedSpan };
 
-        _photographedPlace = PlaceInTheArea() with { PhotoName = $"places/{Guid.NewGuid()}/photos/{Guid.NewGuid()}" };
+        var photographedPlaceId = $"place-{Guid.NewGuid()}";
+        var photo = new GooglePhoto
+        {
+            Name = $"places/{photographedPlaceId}/photos/{Guid.NewGuid()}",
+            GoogleMapsUri = $"https://maps.google.com/maps/place//data=!3m4!1e2!3m2!1s{Guid.NewGuid()}",
+            AuthorAttributions = [Author(), Author() with { Uri = null, PhotoUri = null }],
+        };
+
+        _photographedPlace = PlaceInTheArea() with { GooglePlaceId = photographedPlaceId, Photo = photo };
         _unphotographedPlace = PlaceInTheArea();
         _addresslessPlace = PlaceInTheArea() with { Address = null };
+
+        _photographedPlaceWithoutGoogleMapsLink =
+            _photographedPlace with { Photo = photo with { GoogleMapsUri = null } };
+        _photographedPlaceWithNamelessAuthor = _photographedPlace with
+        {
+            Photo = photo with { AuthorAttributions = [..photo.AuthorAttributions, Author() with { DisplayName = null }] }
+        };
+        _photographedPlaceWithoutPhoto = _photographedPlace with { Photo = null };
 
         _endpointLog = $"Searching places for {_query}";
         _googleFailureLog =
@@ -130,7 +151,19 @@ public partial class Search_Places_Feature : FeatureFixture
             Address = place.Address!,
             Latitude = place.Latitude,
             Longitude = place.Longitude,
-            PhotoReference = place.PhotoName,
+            Photo = place.Photo is null
+                ? null
+                : new PlacePhotoResponse
+                {
+                    Reference = place.Photo.Name,
+                    GoogleMapsUri = place.Photo.GoogleMapsUri!,
+                    AuthorAttributions = place.Photo.AuthorAttributions.Select(author => new PhotoAuthorAttributionResponse
+                    {
+                        DisplayName = author.DisplayName!,
+                        Uri = author.Uri,
+                        PhotoUri = author.PhotoUri,
+                    }).ToArray(),
+                },
         }), options => options.WithStrictOrdering());
     }
 
@@ -162,6 +195,13 @@ public partial class Search_Places_Feature : FeatureFixture
             .Excluding(details => details.Extensions)
             .Excluding(details => details.Type));
     }
+
+    private GoogleAuthorAttribution Author() => new()
+    {
+        DisplayName = _fixture.Create<string>(),
+        Uri = $"https://www.google.com/maps/contrib/{Guid.NewGuid()}",
+        PhotoUri = $"https://lh3.googleusercontent.com/a/{Guid.NewGuid()}",
+    };
 
     private GoogleSearchResult PlaceInTheArea() => new()
     {

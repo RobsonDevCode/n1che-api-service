@@ -6,6 +6,7 @@ internal static class PlaceEndpointBuilder
     {
         endpoints.MapGroup("places")
             .AddSearchPlacesEndpoints()
+            .AddGetPlacePhotoMediaEndpoints()
             .RequireAuthorization()
             .WithTags("places");
 

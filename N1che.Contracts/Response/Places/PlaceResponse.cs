@@ -21,9 +21,6 @@ public record PlaceResponse
     /// <summary>Longitude in decimal degrees (WGS 84).</summary>
     public required double Longitude { get; init; }
 
-    /// <summary>
-    /// Reference to the place's first photo, to be exchanged for the image at the photos endpoint.
-    /// Absent when Google holds no photo of the place.
-    /// </summary>
-    public string? PhotoReference { get; init; }
+    /// <summary>The place's first photo; absent when Google holds none that can be shown.</summary>
+    public PlacePhotoResponse? Photo { get; init; }
 }

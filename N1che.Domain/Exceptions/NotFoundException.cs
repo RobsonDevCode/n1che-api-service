@@ -6,6 +6,7 @@ public sealed class NotFoundException(string entityType, params object[] paramet
     private const string RouteFormat = "Route {0} not found";
     private const string ReviewFormat = "Review {0} not found";
     private const string NicheFormat = "Niche {0} not found";
+    private const string PhotoFormat = "Photo {0} not found";
     private const string ShopVoteFormat = "Vote for shop {0} not found";
     private const string RouteVoteFormat = "Vote for route {0} not found";
     private const string BookmarkFormat = "Bookmark for shop {0} not found";
@@ -17,6 +18,7 @@ public sealed class NotFoundException(string entityType, params object[] paramet
         EntityTypes.Route => RouteFormat,
         EntityTypes.Review => ReviewFormat,
         EntityTypes.Niche => NicheFormat,
+        EntityTypes.Photo => PhotoFormat,
         EntityTypes.ShopVote => ShopVoteFormat,
         EntityTypes.RouteVote => RouteVoteFormat,
         EntityTypes.Bookmark => BookmarkFormat,

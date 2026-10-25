@@ -16,4 +16,13 @@ internal static class PlacesClient
 
         return await client.GetAsync($"places/search{query}");
     }
+
+    public static async Task<HttpResponseMessage> GetPlacePhotoMedia(this HttpClient client, PlacePhotoMediaFilter filter)
+    {
+        var query = new QueryBuilder()
+            .Add("maxWidth", filter.MaxWidth)
+            .Build();
+
+        return await client.GetAsync($"places/{filter.PlaceId}/photos/{filter.PhotoId}/media{query}");
+    }
 }

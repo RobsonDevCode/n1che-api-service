@@ -42,6 +42,26 @@ public partial class Search_Places_Feature
     }
 
     [Scenario]
+    public async Task Search_Places_Returns_The_Place_Without_Its_Photo_When_The_Photo_Has_No_Google_Maps_Link()
+    {
+        await Runner.RunScenarioAsync(
+            given => Google_Returns_Successfully(_photographedPlaceWithoutGoogleMapsLink),
+            when => SearchPlaces_Is_Called(_filter),
+            then => HttpResponse.Status_Code_Is(_response, HttpStatusCode.OK),
+            and => The_Places_Are_Returned(_photographedPlaceWithoutPhoto));
+    }
+
+    [Scenario]
+    public async Task Search_Places_Returns_Only_The_Named_Photo_Authors_When_An_Author_Has_No_Name()
+    {
+        await Runner.RunScenarioAsync(
+            given => Google_Returns_Successfully(_photographedPlaceWithNamelessAuthor),
+            when => SearchPlaces_Is_Called(_filter),
+            then => HttpResponse.Status_Code_Is(_response, HttpStatusCode.OK),
+            and => The_Places_Are_Returned(_photographedPlace));
+    }
+
+    [Scenario]
     public async Task Search_Places_Returns_Bad_Gateway_When_Google_Cannot_Answer()
     {
         await Runner.RunScenarioAsync(

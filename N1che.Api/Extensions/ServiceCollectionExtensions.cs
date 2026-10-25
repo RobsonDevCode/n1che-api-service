@@ -153,6 +153,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IValidator<ComputeRouteRequest>, ComputeRouteRequestValidator>();
         services.AddSingleton<IValidator<CreateRouteRequest>, CreateRouteRequestValidator>();
         services.AddSingleton<IValidator<PlacesSearchFilter>, PlacesSearchFilterValidator>();
+        services.AddSingleton<IValidator<PlacePhotoMediaFilter>, PlacePhotoMediaFilterValidator>();
         services.AddSingleton<IValidator<PaginationFilter>, PaginationFilterValidator>();
 
         return services;

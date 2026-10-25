@@ -84,4 +84,39 @@ public sealed class GooglePlacesClient : IGooglePlacesClient
 
         return results?.ToDomainModels() ?? [];
     }
+
+    public async Task<PlacePhotoMediaModel?> GetPlacePhotoMedia(
+        PlacePhotoMediaFilterModel filter, CancellationToken cancellationToken)
+    {
+        // Without skipHttpRedirect Google redirects to the image; with it, it returns the image's address.
+        using var request = new HttpRequestMessage(HttpMethod.Get,
+            $"v1/{filter.Reference}/media?maxWidthPx={filter.MaxWidth}&skipHttpRedirect=true");
+
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        if (response.StatusCode is HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            _logger.LogError("Google Places answered {StatusCode} for photo {Reference}: {Error}",
+                (int)response.StatusCode, filter.Reference, error);
+
+            // Google's own wording describes its API rather than ours, so it is logged and never returned.
+            if (response.StatusCode is HttpStatusCode.BadRequest)
+            {
+                throw new InvalidRequestException(EntityTypes.Photo, filter.Reference);
+            }
+
+            throw new GooglePlacesException();
+        }
+
+        var media = await response.Content.ReadFromJsonAsync<PlacePhotoMediaResponse>(cancellationToken);
+
+        return media?.ToDomainModel();
+    }
 }
