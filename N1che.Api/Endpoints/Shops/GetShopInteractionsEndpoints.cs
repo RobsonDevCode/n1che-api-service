@@ -14,7 +14,8 @@ internal static class GetShopInteractionsEndpoints
     {
         group.MapGet("{id:guid}/interactions", GetByShopId)
             .WithSummary("Get Shop Interactions")
-            .WithDescription("Get the shop's live vote count with the calling user's own vote and bookmark state");
+            .WithDescription("Get the shop's live vote count with the calling user's own vote and bookmark state")
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         return group;
     }

@@ -28,7 +28,8 @@ internal static class GetShopsEndpoints
 
         group.MapGet("{id:guid}", GetById)
             .WithSummary("Get Shop By Id")
-            .WithDescription("Get a single shop's static detail; votes and reviews are served by their own endpoints");
+            .WithDescription("Get a single shop's static detail; votes and reviews are served by their own endpoints")
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         return group;
     }

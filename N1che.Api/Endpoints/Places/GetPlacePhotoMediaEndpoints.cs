@@ -15,7 +15,9 @@ internal static class GetPlacePhotoMediaEndpoints
         group.MapGet("{placeId}/photos/{photoId}/media", GetPhotoMedia)
             .WithValidation<PlacePhotoMediaFilter>()
             .WithSummary("Get Place Photo Media")
-            .WithDescription("Get a short-lived public address for a place photo's image");
+            .WithDescription("Get a short-lived public address for a place photo's image")
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status502BadGateway);
 
         return group;
     }

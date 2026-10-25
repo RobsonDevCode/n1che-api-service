@@ -17,7 +17,8 @@ internal static class CreateShopReviewEndpoints
         group.MapPost("{id:guid}/reviews", Create)
             .WithValidation<CreateReviewRequest>()
             .WithSummary("Add Shop Review")
-            .WithDescription("Review a shop in one of its niches on the calling user's behalf");
+            .WithDescription("Review a shop in one of its niches on the calling user's behalf")
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         return group;
     }

@@ -12,11 +12,14 @@ internal static class ShopBookmarkEndpoints
     {
         group.MapPost("{id:guid}/save", Add)
             .WithSummary("Save Shop")
-            .WithDescription("Bookmark a shop on the calling user's behalf");
+            .WithDescription("Bookmark a shop on the calling user's behalf")
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
 
         group.MapDelete("{id:guid}/save", Remove)
             .WithSummary("Unsave Shop")
-            .WithDescription("Withdraw the calling user's bookmark of a shop");
+            .WithDescription("Withdraw the calling user's bookmark of a shop")
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         return group;
     }

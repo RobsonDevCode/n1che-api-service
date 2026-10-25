@@ -7,6 +7,7 @@ internal static class NicheEndpointBuilder
         endpoints.MapGroup("niches")
             .AddGetNichesEndpoints()
             .RequireAuthorization()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
             .WithTags("niches");
 
         return endpoints;

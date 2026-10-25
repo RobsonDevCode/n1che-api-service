@@ -17,7 +17,9 @@ internal static class CreateShopEndpoints
         group.MapPost("", Create)
             .WithValidation<CreateShopRequest>()
             .WithSummary("Add Shop")
-            .WithDescription("Add a Google place as a shop, seeding its trading hours from Google Places");
+            .WithDescription("Add a Google place as a shop, seeding its trading hours from Google Places")
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesProblem(StatusCodes.Status502BadGateway);
 
         return group;
     }

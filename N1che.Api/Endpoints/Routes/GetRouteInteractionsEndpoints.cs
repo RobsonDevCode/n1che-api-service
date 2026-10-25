@@ -14,7 +14,8 @@ internal static class GetRouteInteractionsEndpoints
     {
         group.MapGet("{id:guid}/interactions", GetByRouteId)
             .WithSummary("Get Route Interactions")
-            .WithDescription("Get the route's live vote count with the calling user's own vote state");
+            .WithDescription("Get the route's live vote count with the calling user's own vote state")
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         return group;
     }

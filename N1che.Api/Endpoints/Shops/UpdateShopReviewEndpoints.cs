@@ -17,7 +17,8 @@ internal static class UpdateShopReviewEndpoints
         group.MapPut("{shopId:guid}/reviews/{reviewId:guid}", Update)
             .WithValidation<UpdateReviewRequest>()
             .WithSummary("Update Shop Review")
-            .WithDescription("Replace the text of a review the calling user wrote");
+            .WithDescription("Replace the text of a review the calling user wrote")
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         return group;
     }

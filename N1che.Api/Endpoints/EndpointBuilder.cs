@@ -1,3 +1,4 @@
+using N1che.Api.Endpoints.Health;
 using N1che.Api.Endpoints.Niches;
 using N1che.Api.Endpoints.Places;
 using N1che.Api.Endpoints.Routes;
@@ -9,6 +10,7 @@ internal static class EndpointBuilder
 {
     internal static WebApplication MapEndpoints(this WebApplication endpoints)
     {
+        endpoints.AddHealthEndpoints();
         endpoints.AddNicheEndpoints();
         endpoints.AddShopEndpoints();
         endpoints.AddRouteEndpoints();

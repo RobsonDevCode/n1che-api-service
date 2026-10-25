@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using N1che.Api.Endpoints;
 using N1che.Api.ExceptionHandling;
 using N1che.Api.Extensions;
@@ -14,7 +13,15 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-builder.Services.AddOpenApi(options => options.AddRouteExamples());
+builder.Services.AddOpenApi(options => options
+    .AddBearerSecurity()
+    .AddCamelCaseQueryParameters()
+    .AddProblemExamples()
+    .AddNicheExamples()
+    .AddShopExamples()
+    .AddReviewExamples()
+    .AddRouteExamples()
+    .AddPlaceExamples());
 builder.Services.AddMemoryCache();
 builder.Services.AddPostgres(builder.Configuration);
 builder.Services.AddDomainDependencies();
@@ -38,9 +45,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference("/docs");
 }
-
-app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false });
-app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
 
 app.MapEndpoints();
 app.Run();
