@@ -33,9 +33,13 @@ jobs:
       - name: Check formatting
         run: dotnet format N1che.slnx --no-restore --verify-no-changes
 
-  service-tests:
+  unit-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      checks: write
 
     steps:
       - uses: actions/checkout@v5
@@ -47,21 +51,73 @@ jobs:
           cache-dependency-path: '**/*.csproj'
 
       - name: Restore
-        run: dotnet restore N1che.slnx
+        run: dotnet restore tests/N1che.Domain.UnitTests
 
       - name: Build
-        run: dotnet build N1che.slnx --no-restore --configuration Release
+        run: dotnet build tests/N1che.Domain.UnitTests --no-restore --configuration Release
 
-      # Testcontainers starts PostGIS on the runner's Docker daemon.
       - name: Test
         run: >
-          dotnet test N1che.slnx --no-build --configuration Release
+          dotnet test tests/N1che.Domain.UnitTests --no-build --configuration Release
           --logger "trx;LogFileName=results.trx"
           --results-directory test-results
+
+      - name: Report test results
+        if: ${{ !cancelled() }}
+        uses: dorny/test-reporter@v2
+        with:
+          name: Unit test results
+          path: test-results/*.trx
+          reporter: dotnet-trx
 
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: unit-test-results
+          path: test-results
+
+  service-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    permissions:
+      contents: read
+      checks: write
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+          cache: true
+          cache-dependency-path: '**/*.csproj'
+
+      - name: Restore
+        run: dotnet restore tests/N1che.ServiceTests
+
+      - name: Build
+        run: dotnet build tests/N1che.ServiceTests --no-restore --configuration Release
+
+      # Testcontainers starts PostGIS on the runner's Docker daemon.
+      - name: Test
+        run: >
+          dotnet test tests/N1che.ServiceTests --no-build --configuration Release
+          --logger "trx;LogFileName=results.trx"
+          --results-directory test-results
+
+      - name: Report test results
+        if: ${{ !cancelled() }}
+        uses: dorny/test-reporter@v2
+        with:
+          name: Service test results
+          path: test-results/*.trx
+          reporter: dotnet-trx
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: service-test-results
           path: test-results

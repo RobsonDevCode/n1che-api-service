@@ -23,7 +23,7 @@ and [`docs/Exceptions.md`](../docs/Exceptions.md) for the domain-exception conve
 | Third-party | Google Places API (New) + Google Routes API, typed `HttpClient`s with standard resilience |
 | API docs | OpenAPI + [Scalar](https://github.com/scalar/scalar) UI (dev only) |
 | Health checks | `AspNetCore.HealthChecks.NpgSql` |
-| Tests | LightBDD (xUnit) + Testcontainers (PostGIS) + WireMock — service tests per endpoint |
+| Tests | LightBDD (xUnit) + Testcontainers (PostGIS) + WireMock — service tests per endpoint; xUnit + NSubstitute unit tests for in-memory domain logic |
 | CI | GitHub Actions — format check + service tests |
 
 ---
@@ -38,6 +38,7 @@ N1che.slnx
 │   ├── N1che.Contracts              # Request/response DTOs and query filters (wire shapes)
 │   └── N1che.Persistence.Postgres   # Npgsql/Dapper readers, writers, transaction scope, goose migrations
 └── tests
+    ├── N1che.Domain.UnitTests       # xUnit + NSubstitute unit tests for in-memory domain logic
     └── N1che.ServiceTests           # LightBDD + Testcontainers + WireMock service tests
 ```
 
@@ -161,6 +162,11 @@ dotnet test
 ```
 
 Every endpoint must have a passing service test before it is considered complete.
+
+Unit tests in `N1che.Domain.UnitTests` are reserved for methods with non-trivial in-memory logic — route
+leg assignment, Google response mapping, opening-hours collapsing, haversine distance. Pass-through
+services and field-for-field mappers are left to the service tests. Collaborators are substituted with
+NSubstitute.
 
 ---
 

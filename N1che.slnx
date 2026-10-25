@@ -6,6 +6,7 @@
     <Project Path="src/N1che.Persistence.Postgres/N1che.Persistence.Postgres.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/N1che.Domain.UnitTests/N1che.Domain.UnitTests.csproj" />
     <Project Path="tests/N1che.ServiceTests/N1che.ServiceTests.csproj" />
   </Folder>
 </Solution>

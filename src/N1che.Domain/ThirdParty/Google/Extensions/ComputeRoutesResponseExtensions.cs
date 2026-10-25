@@ -73,5 +73,6 @@ public static class ComputeRoutesResponseExtensions
                 CultureInfo.InvariantCulture,
                 out var seconds)
                 ? seconds
-                : 0);
+                : 0,
+                MidpointRounding.AwayFromZero);
 }

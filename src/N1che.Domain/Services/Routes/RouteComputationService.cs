@@ -97,7 +97,8 @@ public sealed class RouteComputationService : IRouteComputationService
             }
         }
 
-        var walkingMinutes = (int)Math.Round(geometry.Walk.DurationSeconds / SecondsPerMinute);
+        var walkingMinutes = (int)Math.Round(
+            geometry.Walk.DurationSeconds / SecondsPerMinute, MidpointRounding.AwayFromZero);
 
         return new RouteShapeModel
         {
