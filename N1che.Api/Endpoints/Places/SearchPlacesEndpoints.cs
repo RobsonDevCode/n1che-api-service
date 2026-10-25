@@ -15,7 +15,8 @@ internal static class SearchPlacesEndpoints
         group.MapGet("search", Search)
             .WithValidation<PlacesSearchFilter>()
             .WithSummary("Search Places")
-            .WithDescription("Search Google Places within an area for a place to add as a shop");
+            .WithDescription("Search Google Places within an area for a place to add as a shop")
+            .ProducesProblem(StatusCodes.Status502BadGateway);
 
         return group;
     }

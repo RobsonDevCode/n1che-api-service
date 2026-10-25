@@ -75,10 +75,10 @@ The API listens on **http://localhost:5180**:
 
 | Route | Purpose |
 |---|---|
-| `/scalar/v1` | Scalar API reference UI (dev only) |
+| `/docs` | Scalar API reference UI (dev only) |
 | `/openapi/v1.json` | OpenAPI document (dev only) |
-| `/health/live` | Liveness — process is up (no dependency checks) |
-| `/health/ready` | Readiness — Postgres reachable |
+| `/health/live` | Liveness — `200` while the process is up (no dependency checks) |
+| `/health/ready` | Readiness — `200` when Postgres is reachable, `503` Problem Details when not |
 
 Connection string lives in `N1che.Api/appsettings.json` under `Postgres:ConnectionString`.
 

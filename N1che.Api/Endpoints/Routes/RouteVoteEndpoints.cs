@@ -12,11 +12,14 @@ internal static class RouteVoteEndpoints
     {
         group.MapPost("{id:guid}/vote", Add)
             .WithSummary("Add Route Vote")
-            .WithDescription("Upvote a route on the calling user's behalf");
+            .WithDescription("Upvote a route on the calling user's behalf")
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
 
         group.MapDelete("{id:guid}/vote", Remove)
             .WithSummary("Remove Route Vote")
-            .WithDescription("Withdraw the calling user's upvote of a route");
+            .WithDescription("Withdraw the calling user's upvote of a route")
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         return group;
     }

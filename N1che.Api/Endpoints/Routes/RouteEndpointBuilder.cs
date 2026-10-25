@@ -11,6 +11,7 @@ internal static class RouteEndpointBuilder
             .AddComputeRouteEndpoints()
             .AddRouteVoteEndpoints()
             .RequireAuthorization()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
             .WithTags("routes");
 
         return endpoints;

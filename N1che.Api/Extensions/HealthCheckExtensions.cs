@@ -5,7 +5,9 @@ namespace N1che.Api.Extensions;
 
 public static class HealthCheckExtensions
 {
-    private static readonly string[] PostgresTags = ["db", "postgres", "npgsql", "ready"];
+    internal const string ReadyTag = "ready";
+
+    private static readonly string[] PostgresTags = ["db", "postgres", "npgsql", ReadyTag];
 
     public static IServiceCollection AddN1cheHealthChecks(this IServiceCollection services)
     {

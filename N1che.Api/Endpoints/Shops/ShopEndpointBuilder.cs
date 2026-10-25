@@ -14,6 +14,7 @@ internal static class ShopEndpointBuilder
             .AddShopVoteEndpoints()
             .AddShopBookmarkEndpoints()
             .RequireAuthorization()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
             .WithTags("shops");
 
         return endpoints;

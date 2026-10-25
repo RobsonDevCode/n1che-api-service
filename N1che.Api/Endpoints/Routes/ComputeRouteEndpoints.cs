@@ -15,7 +15,9 @@ internal static class ComputeRouteEndpoints
         group.MapPost("compute", Compute)
             .WithValidation<ComputeRouteRequest>()
             .WithSummary("Compute Route")
-            .WithDescription("Compute the walk through a set of shops without saving the route");
+            .WithDescription("Compute the walk through a set of shops without saving the route")
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status502BadGateway);
 
         return group;
     }

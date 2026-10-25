@@ -20,7 +20,10 @@ internal static class GetRoutesEndpoints
         group.MapGet("{id:guid}", GetById)
             .WithValidation<GetRouteFilter>()
             .WithSummary("Get Route By Id")
-            .WithDescription("Get a saved route with its walk computed from an origin through its stops");
+            .WithDescription("Get a saved route with its walk computed from an origin through its stops")
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status502BadGateway);
 
         return group;
     }

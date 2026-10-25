@@ -12,11 +12,14 @@ internal static class ShopVoteEndpoints
     {
         group.MapPost("{id:guid}/vote", Add)
             .WithSummary("Add Shop Vote")
-            .WithDescription("Upvote a shop on the calling user's behalf");
+            .WithDescription("Upvote a shop on the calling user's behalf")
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
 
         group.MapDelete("{id:guid}/vote", Remove)
             .WithSummary("Remove Shop Vote")
-            .WithDescription("Withdraw the calling user's upvote of a shop");
+            .WithDescription("Withdraw the calling user's upvote of a shop")
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         return group;
     }

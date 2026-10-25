@@ -17,7 +17,8 @@ internal static class CreateRouteEndpoints
         group.MapPost("", Create)
             .WithValidation<CreateRouteRequest>()
             .WithSummary("Save Route")
-            .WithDescription("Save a built route, storing the walk between its stops");
+            .WithDescription("Save a built route, storing the walk between its stops")
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         return group;
     }

@@ -8,6 +8,7 @@ internal static class PlaceEndpointBuilder
             .AddSearchPlacesEndpoints()
             .AddGetPlacePhotoMediaEndpoints()
             .RequireAuthorization()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
             .WithTags("places");
 
         return endpoints;
